@@ -10,7 +10,7 @@ A Hubot script that integrates with Atlassian Stash. Currently supports:
 
 ## Example
 
-    christoffer> hubot stash-poll subscribe https://stashurl.com/rest/api/1.0/projects/MYPROJ/repos/MYREPO/pull-requests
+    christoffer> hubot stash-poll add https://stashurl.com/rest/api/1.0/projects/MYPROJ/repos/MYREPO/pull-requests
     Hubot> christoffer: #your-room is now subscribing to PR changes in repo https://stashurl.com/rest/api/1.0/projects/MYPROJ/repos/MYREPO/pull-requests
 
 ## Configuration

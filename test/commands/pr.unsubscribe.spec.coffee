@@ -26,7 +26,7 @@ describe 'commands | pr | unsubscribe', ->
 
 
   it 'should register a listener', ->
-    expect(context.robot.respond.withArgs(/stash-poll unsubscribe (.*)/i).calledOnce).to.equal true
+    expect(context.robot.respond.withArgs(/stash-poll rm (.*)/i).calledOnce).to.equal true
 
 
   it 'should unsubscribe the room from the given repo', (done) ->
@@ -41,4 +41,4 @@ describe 'commands | pr | unsubscribe', ->
         expect(context.robot.brain.data.stashPr.repos['http://mocha.com/'].rooms).to.eql ['#abc']
         expect(strings[0]).to.equal "#mocha is no longer subscribing to PR changes in repo http://mocha.com/"
 
-    context.robot.adapter.receive new TextMessage(context.user, "#{context.robot.name} stash-poll unsubscribe http://mocha.com/")
+    context.robot.adapter.receive new TextMessage(context.user, "#{context.robot.name} stash-poll rm http://mocha.com/")
