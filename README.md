@@ -1,12 +1,10 @@
 # hubot-stash
 
-A Hubot script that integrates with Atlassian Stash. Currently supports:
-
-- polling pull requests for updates
+A Hubot script that polls pull request status from Atlassian Stash.
 
 ## Installation
 
-    $ npm install git://github.com/klarna/hubot-stash
+    $ npm install git://github.com/klarna/hubot-stash-poll
 
 ## Example
 
@@ -15,7 +13,8 @@ A Hubot script that integrates with Atlassian Stash. Currently supports:
 
 ## Configuration
 
-See [`src/scripts/stash.coffee`](src/scripts/stash.coffee).
+Requires read access to the Stash repositories you will be polling. 
+See [`src/config/config.coffee`](src/config/config.coffee).
 
 ## Development
 
@@ -28,14 +27,14 @@ See [`src/scripts/stash.coffee`](src/scripts/stash.coffee).
 
 ## Author
 
-[cskeppstedt][user] &lt;[chris.skeppstedt@klarna.com][mail]&gt; for [Klarna AB][klarna].
+[cskeppstedt][user] at [Klarna AB][klarna].
 
 ## Badges
 
 [![Build Status][travis-badge]][travis]
 
-[travis]: https://travis-ci.org/klarna/hubot-stash
-[travis-badge]: https://travis-ci.org/klarna/hubot-stash.svg?branch=master
+[travis]: https://travis-ci.org/klarna/hubot-stash-poll
+[travis-badge]: https://travis-ci.org/klarna/hubot-stash-poll.svg?branch=master
 [user]: https://github.com/cskeppstedt
 [mail]: mailto:chris.skeppstedt@klarna.com
 [klarna]: https://github.com/klarna
