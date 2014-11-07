@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# bootstrap environment
+source script/bootstrap
+
+# run the test task
+gulp test

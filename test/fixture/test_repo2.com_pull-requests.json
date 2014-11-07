@@ -1,0 +1,82 @@
+{
+  "size": 6,
+  "limit": 25,
+  "isLastPage": true,
+  "values": [
+    {
+      "id": 201,
+      "title": "Pr 201, Repo 1, Project 1",
+      "state": "OPEN",
+      "links": {
+        "self": [
+          {
+            "href": "http://test_repo2.com/projects/proj2/repos/repo1/pull-requests/201"
+          }
+        ]
+      }
+    },
+    {
+      "id": 202,
+      "title": "Pr 202, Repo 1, Project 1",
+      "state": "MERGED",
+      "links": {
+        "self": [
+          {
+            "href": "http://test_repo2.com/projects/proj2/repos/repo1/pull-requests/202"
+          }
+        ]
+      }
+    },
+    {
+      "id": 203,
+      "title": "Pr 203, Repo 1, Project 1",
+      "state": "DECLINED",
+      "links": {
+        "self": [
+          {
+            "href": "http://test_repo2.com/projects/proj2/repos/repo1/pull-requests/203"
+          }
+        ]
+      }
+    },
+    {
+      "id": 204,
+      "title": "Pr 204, Repo 1, Project 1",
+      "state": "OPEN",
+      "links": {
+        "self": [
+          {
+            "href": "http://test_repo2.com/projects/proj2/repos/repo1/pull-requests/204"
+          }
+        ]
+      }
+    },
+    {
+      "id": 205,
+      "title": "Pr 205, Repo 1, Project 1",
+      "state": "MERGED",
+      "links": {
+        "self": [
+          {
+            "href": "http://test_repo2.com/projects/proj2/repos/repo1/pull-requests/205"
+          }
+        ]
+      }
+    },
+    {
+      "id": 206,
+      "title": "Pr 206, Repo 1, Project 1",
+      "state": "DECLINED",
+      "links": {
+        "self": [
+          {
+            "href": "http://test_repo2.com/projects/proj2/repos/repo1/pull-requests/206"
+          }
+        ]
+      }
+    }
+  ],
+  "start": 0,
+  "filter": null,
+  "nextPageStart": 25
+}
