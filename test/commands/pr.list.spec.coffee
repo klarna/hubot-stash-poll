@@ -26,7 +26,7 @@ describe 'commands | pr | list', ->
 
 
   it 'should register a listener', ->
-    expect(context.robot.respond.withArgs(/stash pr$/i).calledOnce).to.equal true
+    expect(context.robot.respond.withArgs(/stash-poll$/i).calledOnce).to.equal true
 
 
   it 'should list all repos that the room is subscribed to', (done) ->
@@ -43,5 +43,5 @@ describe 'commands | pr | list', ->
       helpers.asyncAssert done, ->
         expect(strings[0]).to.equal "#mocha is subscribing to PR changes from the 2 repo(s): http://mocha.com/, http://abc.com/"
 
-    context.robot.adapter.receive new TextMessage(context.user, "#{context.robot.name} stash pr")
+    context.robot.adapter.receive new TextMessage(context.user, "#{context.robot.name} stash-poll")
 

@@ -6,9 +6,9 @@
 #  HUBOT_STASH_PASSWORD
 #
 # Commands:
-#   hubot stash pr - Lists the subscriptions in the current room
-#   hubot stash pr subscribe <api url> - Subscribe current room to PR changes on the given API url, e.g. https://stashurl.com/rest/api/1.0/projects/MYPROJ/repos/MYREPO/pull-requests
-#   hubot stash pr unsubscribe <api url> - Unsubscribe current room from PR changes on the given API url, e.g. https://stashurl.com/rest/api/1.0/projects/MYPROJ/repos/MYREPO/pull-requests
+#   hubot stash-poll - Lists the subscriptions in the current room
+#   hubot stash-poll subscribe <api url> - Subscribe current room to PR changes on the given API url, e.g. https://stashurl.com/rest/api/1.0/projects/MYPROJ/repos/MYREPO/pull-requests
+#   hubot stash-poll unsubscribe <api url> - Unsubscribe current room from PR changes on the given API url, e.g. https://stashurl.com/rest/api/1.0/projects/MYPROJ/repos/MYREPO/pull-requests
 #
 # Authors:
 #   Christoffer Skeppstedt (chris.skeppstedt@klarna.com, http://github.com/cskeppstedt/)
@@ -33,7 +33,7 @@ bot = (robot) ->
   # =========================================================================
   #  RESPONSES
   # =========================================================================
-  robot.respond /stash pr$/i, (msg) ->
+  robot.respond /stash-poll$/i, (msg) ->
     room = msg.message.user.room
 
     try
@@ -45,7 +45,7 @@ bot = (robot) ->
 
 
 
-  robot.respond /stash pr subscribe (.*)/i, (msg) ->
+  robot.respond /stash-poll subscribe (.*)/i, (msg) ->
     room = msg.message.user.room
 
     try
@@ -62,7 +62,7 @@ bot = (robot) ->
       msg.reply "An exception occurred! Could not add subscription for #{apiUrl} in room #{room}. Message: #{e.message}"
 
 
-  robot.respond /stash pr unsubscribe (.*)/i, (msg) ->
+  robot.respond /stash-poll unsubscribe (.*)/i, (msg) ->
     room = msg.message.user.room
 
     try

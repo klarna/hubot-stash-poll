@@ -30,7 +30,7 @@ describe 'commands | pr | subscribe', ->
   # =========================================================================
   describe 'listener', ->
     it 'should register', ->
-      expect(context.robot.respond.withArgs(/stash pr subscribe (.*)/i).calledOnce).to.equal true
+      expect(context.robot.respond.withArgs(/stash-poll subscribe (.*)/i).calledOnce).to.equal true
 
 
     it 'should send an error message when uri is invalid', (done) ->
@@ -38,7 +38,7 @@ describe 'commands | pr | subscribe', ->
         helpers.asyncAssert done, ->
           expect(strings[0]).to.equal "Sorry, !@£$% doesn't look like a valid URI to me"
 
-      context.robot.adapter.receive new TextMessage(context.user, "#{context.robot.name} stash pr subscribe !@£$%")
+      context.robot.adapter.receive new TextMessage(context.user, "#{context.robot.name} stash-poll subscribe !@£$%")
 
 
     it 'should acknowledge a repo subscription', (done) ->
@@ -46,7 +46,7 @@ describe 'commands | pr | subscribe', ->
         helpers.asyncAssert done, ->
           expect(strings[0]).to.equal "#{envelope.room} is now subscribing to PR changes in repo http://gogogo.com/"
 
-      context.robot.adapter.receive new TextMessage(context.user, "#{context.robot.name} stash pr subscribe http://gogogo.com/")
+      context.robot.adapter.receive new TextMessage(context.user, "#{context.robot.name} stash-poll subscribe http://gogogo.com/")
 
 
 
@@ -60,7 +60,7 @@ describe 'commands | pr | subscribe', ->
           expect(context.robot.brain.data.stashPr.repos['http://gogogo.com/'].api_url).to.eql 'http://gogogo.com/'
           expect(context.robot.brain.data.stashPr.repos['http://gogogo.com/'].rooms).to.eql [envelope.room]
 
-      context.robot.adapter.receive new TextMessage(context.user, "#{context.robot.name} stash pr subscribe http://gogogo.com/")
+      context.robot.adapter.receive new TextMessage(context.user, "#{context.robot.name} stash-poll subscribe http://gogogo.com/")
 
 
 
@@ -84,7 +84,7 @@ describe 'commands | pr | subscribe', ->
         helpers.asyncAssert done, ->
           expect(context.robot.brain.data.stashPr.repos['http://abc.com/'].rooms).to.eql ['#abc','#mocha']
 
-      context.robot.adapter.receive new TextMessage(context.user, "#{context.robot.name} stash pr subscribe http://abc.com/")
+      context.robot.adapter.receive new TextMessage(context.user, "#{context.robot.name} stash-poll subscribe http://abc.com/")
 
 
     it 'should not push the room to a repo if it already exists', (done) ->
@@ -92,4 +92,4 @@ describe 'commands | pr | subscribe', ->
         helpers.asyncAssert done, ->
           expect(context.robot.brain.data.stashPr.repos['http://mocha.com/'].rooms).to.eql ['#mocha']
 
-      context.robot.adapter.receive new TextMessage(context.user, "#{context.robot.name} stash pr subscribe http://mocha.com/")
+      context.robot.adapter.receive new TextMessage(context.user, "#{context.robot.name} stash-poll subscribe http://mocha.com/")
