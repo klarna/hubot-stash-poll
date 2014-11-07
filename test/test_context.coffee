@@ -16,8 +16,7 @@ module.exports = (done) ->
 
   context.robot = new Robot(null, 'mock-adapter', false, 'MOCKBOT')
 
-  context.robot.brain.data.stashPr =
-    repos: {}
+  context.robot.brain.data['stash-poll'] = {}
 
   context.sandbox.spy context.robot, 'respond'
   context.sandbox.spy context.robot, 'hear'

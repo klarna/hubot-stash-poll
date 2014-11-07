@@ -30,15 +30,14 @@ describe 'commands | pr | unsubscribe', ->
 
 
   it 'should unsubscribe the room from the given repo', (done) ->
-    context.robot.brain.data.stashPr ||=
-      repos: {}
-    context.robot.brain.data.stashPr.repos['http://mocha.com/'] =
-      api_url: 'http://mocha.com/'
-      rooms: ['#mocha', '#abc']
+    context.robot.brain.data['stash-poll'] =
+      'http://mocha.com/':
+        api_url: 'http://mocha.com/'
+        rooms: ['#mocha', '#abc']
 
     context.robot.adapter.on 'reply', (envelope, strings) ->
       helpers.asyncAssert done, ->
-        expect(context.robot.brain.data.stashPr.repos['http://mocha.com/'].rooms).to.eql ['#abc']
+        expect(context.robot.brain.data['stash-poll']['http://mocha.com/'].rooms).to.eql ['#abc']
         expect(strings[0]).to.equal "#mocha is no longer subscribing to PR changes in repo http://mocha.com/"
 
     context.robot.adapter.receive new TextMessage(context.user, "#{context.robot.name} stash-poll rm http://mocha.com/")

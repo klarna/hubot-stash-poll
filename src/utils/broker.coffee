@@ -14,7 +14,7 @@ class Broker
       return false
 
     @_ensureBrain()
-    repo = @robot.brain.data.stashPr.repos[apiUrl]
+    repo = @robot.brain.data['stash-poll'][apiUrl]
 
     if repo?
       repo.rooms ?= []
@@ -24,12 +24,12 @@ class Broker
         api_url: apiUrl
         rooms: [room]
 
-    @robot.brain.data.stashPr.repos[apiUrl] = repo
+    @robot.brain.data['stash-poll'][apiUrl] = repo
     return true
 
 
   tryUnregisterRepo: (apiUrl, room) ->
-    repo = @robot.brain.data.stashPr?.repos?[apiUrl]
+    repo = @robot.brain.data['stash-poll']?[apiUrl]
 
     if repo?.rooms?.length >= 0
       index = repo.rooms.indexOf room
@@ -54,7 +54,7 @@ class Broker
 
   getSubscribedReposFor: (room) ->
     repos = []
-    for api_url, repo of @robot.brain.data.stashPr.repos
+    for api_url, repo of @robot.brain.data['stash-poll']
       if repo.rooms? and repo.rooms.indexOf(room) >= 0
         repos.push repo
 
@@ -62,9 +62,8 @@ class Broker
 
 
   _ensureBrain: ->
-    if not @robot.brain.data.stashPr?
-      @robot.brain.data.stashPr =
-        repos: {}
+    if not @robot.brain.data['stash-poll']?
+      @robot.brain.data['stash-poll'] = {}
 
 
 

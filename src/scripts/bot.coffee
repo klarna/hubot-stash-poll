@@ -84,7 +84,7 @@ bot = (robot) ->
   #  POLLING
   # =========================================================================
   sendRoomMessages = (prData, message) ->
-    repo = robot.brain.data.stashPr?.repos?[prData.api_url]
+    repo = robot.brain.data['stash-poll']?[prData.api_url]
     return if not repo? or not repo.rooms?
 
     for room in repo.rooms

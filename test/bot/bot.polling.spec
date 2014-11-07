@@ -43,11 +43,10 @@ describe 'bot | polling', ->
   # =========================================================================
   it 'should send a group message on opened PR', (done) ->
     # given
-    context.robot.brain.data.stashPr =
-      repos:
-        'http://test_repo1.com/rest/api/1.0/projects/proj1/repos/repo1/pull-requests':
-          api_url: 'http://test_repo1.com/rest/api/1.0/projects/proj1/repos/repo1/pull-requests'
-          rooms: ['#mocha']
+    context.robot.brain.data['stash-poll'] =
+      'http://test_repo1.com/rest/api/1.0/projects/proj1/repos/repo1/pull-requests':
+        api_url: 'http://test_repo1.com/rest/api/1.0/projects/proj1/repos/repo1/pull-requests'
+        rooms: ['#mocha']
 
     context.robot.adapter.on 'send', (envelope, strings) ->
       helpers.asyncAssert done, ->
@@ -64,11 +63,10 @@ describe 'bot | polling', ->
 
   it 'should send a group message on merged PR', (done) ->
     # given
-    context.robot.brain.data.stashPr =
-      repos:
-        'http://test_repo1.com/rest/api/1.0/projects/proj1/repos/repo1/pull-requests':
-          api_url: 'http://test_repo1.com/rest/api/1.0/projects/proj1/repos/repo1/pull-requests'
-          rooms: ['#mocha']
+    context.robot.brain.data['stash-poll'] =
+      'http://test_repo1.com/rest/api/1.0/projects/proj1/repos/repo1/pull-requests':
+        api_url: 'http://test_repo1.com/rest/api/1.0/projects/proj1/repos/repo1/pull-requests'
+        rooms: ['#mocha']
 
     context.robot.adapter.on 'send', (envelope, strings) ->
       helpers.asyncAssert done, ->
@@ -85,11 +83,10 @@ describe 'bot | polling', ->
 
   it 'should send a group message on declined PR', (done) ->
     # given
-    context.robot.brain.data.stashPr =
-      repos:
-        'http://test_repo1.com/rest/api/1.0/projects/proj1/repos/repo1/pull-requests':
-          api_url: 'http://test_repo1.com/rest/api/1.0/projects/proj1/repos/repo1/pull-requests'
-          rooms: ['#mocha']
+    context.robot.brain.data['stash-poll'] =
+      'http://test_repo1.com/rest/api/1.0/projects/proj1/repos/repo1/pull-requests':
+        api_url: 'http://test_repo1.com/rest/api/1.0/projects/proj1/repos/repo1/pull-requests'
+        rooms: ['#mocha']
 
     context.robot.adapter.on 'send', (envelope, strings) ->
       helpers.asyncAssert done, ->

@@ -57,8 +57,8 @@ describe 'commands | pr | subscribe', ->
     it 'should save a new repo subscription to the brain', (done) ->
       context.robot.adapter.on 'reply', (envelope, strings) ->
         helpers.asyncAssert done, ->
-          expect(context.robot.brain.data.stashPr.repos['http://gogogo.com/'].api_url).to.eql 'http://gogogo.com/'
-          expect(context.robot.brain.data.stashPr.repos['http://gogogo.com/'].rooms).to.eql [envelope.room]
+          expect(context.robot.brain.data['stash-poll']['http://gogogo.com/'].api_url).to.eql 'http://gogogo.com/'
+          expect(context.robot.brain.data['stash-poll']['http://gogogo.com/'].rooms).to.eql [envelope.room]
 
       context.robot.adapter.receive new TextMessage(context.user, "#{context.robot.name} stash-poll add http://gogogo.com/")
 
@@ -69,20 +69,19 @@ describe 'commands | pr | subscribe', ->
   # =========================================================================
   describe 'given a non-empty brain', ->
     beforeEach ->
-      context.robot.brain.data.stashPr ||=
-        repos: {}
-      context.robot.brain.data.stashPr.repos['http://abc.com/'] =
-        api_url: 'http://abc.com/'
-        rooms: ['#abc']
-      context.robot.brain.data.stashPr.repos['http://mocha.com/'] =
-        api_url: 'http://mocha.com/'
-        rooms: ['#mocha']
+      context.robot.brain.data['stash-poll'] =
+        'http://abc.com/':
+          api_url: 'http://abc.com/'
+          rooms: ['#abc']
+        'http://mocha.com/':
+          api_url: 'http://mocha.com/'
+          rooms: ['#mocha']
 
 
     it 'should push the room to a repo if it doesn\'t already exist', (done) ->
       context.robot.adapter.on 'reply', (envelope, strings) ->
         helpers.asyncAssert done, ->
-          expect(context.robot.brain.data.stashPr.repos['http://abc.com/'].rooms).to.eql ['#abc','#mocha']
+          expect(context.robot.brain.data['stash-poll']['http://abc.com/'].rooms).to.eql ['#abc','#mocha']
 
       context.robot.adapter.receive new TextMessage(context.user, "#{context.robot.name} stash-poll add http://abc.com/")
 
@@ -90,6 +89,6 @@ describe 'commands | pr | subscribe', ->
     it 'should not push the room to a repo if it already exists', (done) ->
       context.robot.adapter.on 'reply', (envelope, strings) ->
         helpers.asyncAssert done, ->
-          expect(context.robot.brain.data.stashPr.repos['http://mocha.com/'].rooms).to.eql ['#mocha']
+          expect(context.robot.brain.data['stash-poll']['http://mocha.com/'].rooms).to.eql ['#mocha']
 
       context.robot.adapter.receive new TextMessage(context.user, "#{context.robot.name} stash-poll add http://mocha.com/")

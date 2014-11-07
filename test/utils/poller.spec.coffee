@@ -88,7 +88,7 @@ describe 'utils | poller', ->
     it 'should create a HTTP request for each repo', ->
       # given
       for repo in context.repos
-        context.robot.brain.data.stashPr.repos[repo.api_url] = repo
+        context.robot.brain.data['stash-poll'][repo.api_url] = repo
 
       # when
       context.poller.fetchRepositories()
@@ -100,7 +100,7 @@ describe 'utils | poller', ->
 
     it 'should emit an event for an unseen PR that is open', (done) ->
       # given
-      context.robot.brain.data.stashPr.repos[context.repos[0].api_url] = context.repos[0]
+      context.robot.brain.data['stash-poll'][context.repos[0].api_url] = context.repos[0]
 
       expectedPr =
         api_url: 'http://test_repo1.com/rest/api/1.0/projects/proj1/repos/repo1/pull-requests'
@@ -122,7 +122,7 @@ describe 'utils | poller', ->
     it 'should emit an event for an existing PR that has been merged', (done) ->
       # given
       context.repos[0].pull_requests['102'].state = 'OPEN'
-      context.robot.brain.data.stashPr.repos[context.repos[0].api_url] = context.repos[0]
+      context.robot.brain.data['stash-poll'][context.repos[0].api_url] = context.repos[0]
 
       expectedPr =
         api_url: 'http://test_repo1.com/rest/api/1.0/projects/proj1/repos/repo1/pull-requests'
@@ -144,7 +144,7 @@ describe 'utils | poller', ->
     it 'should emit an event for an existing PR that has been declined', (done) ->
       # given
       context.repos[0].pull_requests['103'].state = 'OPEN'
-      context.robot.brain.data.stashPr.repos[context.repos[0].api_url] = context.repos[0]
+      context.robot.brain.data['stash-poll'][context.repos[0].api_url] = context.repos[0]
 
       expectedPr =
         api_url: 'http://test_repo1.com/rest/api/1.0/projects/proj1/repos/repo1/pull-requests'
@@ -165,7 +165,7 @@ describe 'utils | poller', ->
 
     it 'should not emit an event for an unseen PR that is merged', (done) ->
       # given
-      context.robot.brain.data.stashPr.repos[context.repos[0].api_url] = context.repos[0]
+      context.robot.brain.data['stash-poll'][context.repos[0].api_url] = context.repos[0]
 
       expectedPr =
         api_url: 'http://test_repo1.com/rest/api/1.0/projects/proj1/repos/repo1/pull-requests'
@@ -186,7 +186,7 @@ describe 'utils | poller', ->
 
     it 'should not emit an event for an unseen PR that is declined', (done) ->
       # given
-      context.robot.brain.data.stashPr.repos[context.repos[0].api_url] = context.repos[0]
+      context.robot.brain.data['stash-poll'][context.repos[0].api_url] = context.repos[0]
 
       expectedPr =
         api_url: 'http://test_repo1.com/rest/api/1.0/projects/proj1/repos/repo1/pull-requests'
@@ -207,7 +207,7 @@ describe 'utils | poller', ->
 
     it 'should not emit an event for an existing PR if state is unchanged', (done) ->
       # given
-      context.robot.brain.data.stashPr.repos[context.repos[0].api_url] = context.repos[0]
+      context.robot.brain.data['stash-poll'][context.repos[0].api_url] = context.repos[0]
 
       forbiddenArgs = [
         api_url: 'http://test_repo1.com/rest/api/1.0/projects/proj1/repos/repo1/pull-requests'
@@ -240,7 +240,7 @@ describe 'utils | poller', ->
     it 'should persist PR state after poll', (done) ->
       # given
       context.repos[0].pull_requests['103'].state = 'OPEN'
-      context.robot.brain.data.stashPr.repos[context.repos[0].api_url] = context.repos[0]
+      context.robot.brain.data['stash-poll'][context.repos[0].api_url] = context.repos[0]
 
       expectedPr =
         api_url: 'http://test_repo1.com/rest/api/1.0/projects/proj1/repos/repo1/pull-requests'
@@ -253,7 +253,7 @@ describe 'utils | poller', ->
       onEmit 'poll:end', ->
         # then
         asyncAssert done, ->
-          repo = context.robot.brain.data.stashPr.repos[context.repos[0].api_url]
+          repo = context.robot.brain.data['stash-poll'][context.repos[0].api_url]
           expect(repo.pull_requests['103'].state).to.equal 'DECLINED'
 
       # when

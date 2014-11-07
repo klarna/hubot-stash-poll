@@ -30,13 +30,13 @@ class Poller
 
 
   fetchRepositories: ->
-    if not @robot.brain.data.stashPr?.repos?
+    if not @robot.brain.data['stash-poll']?
       return
 
     @events.emit 'poll:begin'
     promises = []
 
-    for api_url, repo of @robot.brain.data.stashPr.repos
+    for api_url, repo of @robot.brain.data['stash-poll']
       fetchUrl = @_buildFetchUrl api_url
 
       do (fetchUrl, repo) =>

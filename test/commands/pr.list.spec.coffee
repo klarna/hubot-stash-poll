@@ -30,14 +30,13 @@ describe 'commands | pr | list', ->
 
 
   it 'should list all repos that the room is subscribed to', (done) ->
-    context.robot.brain.data.stashPr ||=
-      repos: {}
-    context.robot.brain.data.stashPr.repos['http://mocha.com/'] =
-      api_url: 'http://mocha.com/'
-      rooms: ['#mocha']
-    context.robot.brain.data.stashPr.repos['http://abc.com/'] =
-      api_url: 'http://abc.com/'
-      rooms: ['#mocha', '#abc']
+    context.robot.brain.data['stash-poll'] =
+      'http://mocha.com/':
+        api_url: 'http://mocha.com/'
+        rooms: ['#mocha']
+      'http://abc.com/':
+        api_url: 'http://abc.com/'
+        rooms: ['#mocha', '#abc']
 
     context.robot.adapter.on 'reply', (envelope, strings) ->
       helpers.asyncAssert done, ->

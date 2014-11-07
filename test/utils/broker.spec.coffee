@@ -31,20 +31,19 @@ describe 'utils | broker', ->
         context.broker.tryRegisterRepo 'http://foo.com/', '#room'
 
         # then
-        expect(context.robot.brain.data.stashPr.repos['http://foo.com/'].api_url).to.eql 'http://foo.com/'
-        expect(context.robot.brain.data.stashPr.repos['http://foo.com/'].rooms).to.eql ['#room']
+        expect(context.robot.brain.data['stash-poll']['http://foo.com/'].api_url).to.eql 'http://foo.com/'
+        expect(context.robot.brain.data['stash-poll']['http://foo.com/'].rooms).to.eql ['#room']
 
 
     describe 'given a non-empty brain', ->
       beforeEach ->
-        context.robot.brain.data.stashPr ||=
-          repos: {}
-        context.robot.brain.data.stashPr.repos['http://abc.com/'] =
-          api_url: 'http://abc.com/'
-          rooms: ['#abc']
-        context.robot.brain.data.stashPr.repos['http://mocha.com/'] =
-          api_url: 'http://mocha.com/'
-          rooms: ['#mocha']
+        context.robot.brain.data['stash-poll'] =
+          'http://abc.com/':
+            api_url: 'http://abc.com/'
+            rooms: ['#abc']
+          'http://mocha.com/':
+            api_url: 'http://mocha.com/'
+            rooms: ['#mocha']
 
 
       it 'should push the room to a repo if it doesn\'t already exist', ->
@@ -52,7 +51,7 @@ describe 'utils | broker', ->
         context.broker.tryRegisterRepo 'http://abc.com/', '#mocha'
 
         # then
-        expect(context.robot.brain.data.stashPr.repos['http://abc.com/'].rooms).to.eql ['#abc','#mocha']
+        expect(context.robot.brain.data['stash-poll']['http://abc.com/'].rooms).to.eql ['#abc','#mocha']
 
 
       it 'should not push the room to a repo if it already exists', ->
@@ -60,7 +59,7 @@ describe 'utils | broker', ->
         context.broker.tryRegisterRepo 'http://abc.com/', '#mocha'
 
         # then
-        expect(context.robot.brain.data.stashPr.repos['http://mocha.com/'].rooms).to.eql ['#mocha']
+        expect(context.robot.brain.data['stash-poll']['http://mocha.com/'].rooms).to.eql ['#mocha']
 
 
 
@@ -88,14 +87,13 @@ describe 'utils | broker', ->
   describe '.getSubscribedReposFor()', ->
     it 'should return the repos that the room is subscribed to', ->
       # given
-      context.robot.brain.data.stashPr =
-        repos:
-          'http://abc.com/':
-            api_url: 'http://abc.com/'
-            rooms: ['#mocha']
-          'http://123.com/':
-            api_url: 'http://123.com/'
-            rooms: ['#mocha']
+      context.robot.brain.data['stash-poll'] =
+        'http://abc.com/':
+          api_url: 'http://abc.com/'
+          rooms: ['#mocha']
+        'http://123.com/':
+          api_url: 'http://123.com/'
+          rooms: ['#mocha']
 
       # then
       repos = context.broker.getSubscribedReposFor '#mocha'
@@ -111,14 +109,13 @@ describe 'utils | broker', ->
 
     it 'should not return the repos that the room is not subscribed to', ->
       # given
-      context.robot.brain.data.stashPr =
-        repos:
-          'http://abc.com/':
-            api_url: 'http://abc.com/'
-            rooms: ['#notmocha']
-          'http://123.com/':
-            api_url: 'http://123.com/'
-            rooms: ['#mocha']
+      context.robot.brain.data['stash-poll'] =
+        'http://abc.com/':
+          api_url: 'http://abc.com/'
+          rooms: ['#notmocha']
+        'http://123.com/':
+          api_url: 'http://123.com/'
+          rooms: ['#mocha']
 
       # then
       repos = context.broker.getSubscribedReposFor '#mocha'
