@@ -1,6 +1,9 @@
 # hubot-stash
 
+[![Build Status][travis-badge]][travis] 
+
 A Hubot script that polls pull request status from Atlassian Stash.
+
 
 ## Installation
 
@@ -29,9 +32,6 @@ See [`src/config/config.coffee`](src/config/config.coffee).
 
 [cskeppstedt][user] at [Klarna AB][klarna].
 
-## Badges
-
-[![Build Status][travis-badge]][travis]
 
 [travis]: https://travis-ci.org/klarna/hubot-stash-poll
 [travis-badge]: https://travis-ci.org/klarna/hubot-stash-poll.svg?branch=master
