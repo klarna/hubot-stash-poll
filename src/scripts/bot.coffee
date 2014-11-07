@@ -19,9 +19,9 @@ Poller = require '../utils/poller'
 config = require '../config/config'
 
 
-stashbot = (robot) ->
-  stashbot.poller = new Poller robot: robot
-  stashbot.broker = new Broker robot: robot
+bot = (robot) ->
+  bot.poller = new Poller robot: robot
+  bot.broker = new Broker robot: robot
 
 
   # =========================================================================
@@ -31,7 +31,7 @@ stashbot = (robot) ->
     room = msg.message.user.room
 
     try
-      repos = stashbot.broker.getSubscribedReposFor room
+      repos = bot.broker.getSubscribedReposFor room
       urls = repos.map (r) -> r.api_url
       msg.reply "#{room} is subscribing to PR changes from the #{urls.length} repo(s): #{urls.join ', '}"
     catch e
@@ -43,12 +43,12 @@ stashbot = (robot) ->
     room = msg.message.user.room
 
     try
-      apiUrl = stashbot.broker.getNormalizedApiUrl msg.match?[1]
+      apiUrl = bot.broker.getNormalizedApiUrl msg.match?[1]
       if not apiUrl?
         msg.reply "Sorry, #{msg.match?[1]} doesn't look like a valid URI to me"
         return
 
-      if stashbot.broker.tryRegisterRepo apiUrl, room
+      if bot.broker.tryRegisterRepo apiUrl, room
         msg.reply "#{room} is now subscribing to PR changes in repo #{apiUrl}"
       else
         msg.reply "Something went wrong! Could not add subscription for #{apiUrl} in room #{room}"
@@ -60,12 +60,12 @@ stashbot = (robot) ->
     room = msg.message.user.room
 
     try
-      apiUrl = stashbot.broker.getNormalizedApiUrl msg.match?[1]
+      apiUrl = bot.broker.getNormalizedApiUrl msg.match?[1]
       if not apiUrl?
         msg.reply "Sorry, #{msg.match?[1]} doesn't look like a valid URI to me"
         return
 
-      if stashbot.broker.tryUnregisterRepo apiUrl, room
+      if bot.broker.tryUnregisterRepo apiUrl, room
         msg.reply "#{room} is no longer subscribing to PR changes in repo #{apiUrl}"
       else
         msg.reply "Something went wrong! Could not unsubscibe from #{apiUrl} in room #{room}"
@@ -85,19 +85,19 @@ stashbot = (robot) ->
       robot.messageRoom room, message
 
 
-  stashbot.poller.events.on 'pr:open', (prData) ->
+  bot.poller.events.on 'pr:open', (prData) ->
     sendRoomMessages prData, "PR ##{prData.pr_id} opened: #{prData.pr_url}"
 
 
-  stashbot.poller.events.on 'pr:merge', (prData) ->
+  bot.poller.events.on 'pr:merge', (prData) ->
     sendRoomMessages prData, "PR ##{prData.pr_id} merged: #{prData.pr_url}"
 
 
-  stashbot.poller.events.on 'pr:decline', (prData) ->
+  bot.poller.events.on 'pr:decline', (prData) ->
     sendRoomMessages prData, "PR ##{prData.pr_id} declined: #{prData.pr_url}"
 
 
-  stashbot.poller.start()
+  bot.poller.start()
 
 
-module.exports = stashbot
+module.exports = bot

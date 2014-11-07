@@ -1,7 +1,7 @@
 {
-  "name": "stashbot",
+  "name": "hubot-stash-poll",
   "version": "0.0.1",
-  "description": "Hubot script that listens to Stash PR changes",
+  "description": "Hubot script that polls Stash for pull request changes",
   "main": "index.coffee",
   "scripts": {
     "test": "script/test"

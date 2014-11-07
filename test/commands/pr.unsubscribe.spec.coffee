@@ -2,7 +2,7 @@ expect = require('chai').expect
 TextMessage = require('hubot/src/message').TextMessage
 
 testContext = require('../test_context')
-stashbot = require('../../src/scripts/stashbot')
+bot = require('../../src/scripts/bot')
 helpers = require('../helpers')
 
 
@@ -16,7 +16,7 @@ describe 'commands | pr | unsubscribe', ->
       context.robot = testContext.robot
       context.sandbox = testContext.sandbox
       context.user = testContext.user
-      stashbot(context.robot)
+      bot(context.robot)
       done()
 
 
