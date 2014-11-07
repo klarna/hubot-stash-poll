@@ -1,9 +1,14 @@
+# test framework
 expect = require('chai').expect
-TextMessage = require('hubot/src/message').TextMessage
+rewire = require('rewire')
 
+# dependencies/helpers
+TextMessage = require('hubot/src/message').TextMessage
 helpers = require('../helpers')
 testContext = require('../test_context')
-bot = require('../../src/scripts/bot')
+
+# test target
+bot = rewire('../../src/scripts/bot')
 
 
 
@@ -16,6 +21,7 @@ describe 'bot | polling', ->
       context.sandbox = testContext.sandbox
       context.user = testContext.user
       bot(context.robot)
+      context.poller = bot.__get__('utils').poller
       done()
 
 
@@ -28,7 +34,7 @@ describe 'bot | polling', ->
   #  STARTUP
   # =========================================================================
   it 'should start the Poller on startup', ->
-    expect(bot.poller.intervalId?).to.equal true
+    expect(context.poller.intervalId?).to.equal true
 
 
 
@@ -50,7 +56,7 @@ describe 'bot | polling', ->
         expect(strings[0]).to.equal "PR #103 opened: http://test_repo1.com/projects/proj1/repos/repo1/pull-requests/103"
 
     # when
-    bot.poller.events.emit 'pr:open',
+    context.poller.events.emit 'pr:open',
       api_url: 'http://test_repo1.com/rest/api/1.0/projects/proj1/repos/repo1/pull-requests'
       pr_id: 103
       pr_url: 'http://test_repo1.com/projects/proj1/repos/repo1/pull-requests/103'
@@ -71,7 +77,7 @@ describe 'bot | polling', ->
         expect(strings[0]).to.equal "PR #103 merged: http://test_repo1.com/projects/proj1/repos/repo1/pull-requests/103"
 
     # when
-    bot.poller.events.emit 'pr:merge',
+    context.poller.events.emit 'pr:merge',
       api_url: 'http://test_repo1.com/rest/api/1.0/projects/proj1/repos/repo1/pull-requests'
       pr_id: 103
       pr_url: 'http://test_repo1.com/projects/proj1/repos/repo1/pull-requests/103'
@@ -92,7 +98,7 @@ describe 'bot | polling', ->
         expect(strings[0]).to.equal "PR #103 declined: http://test_repo1.com/projects/proj1/repos/repo1/pull-requests/103"
 
     # when
-    bot.poller.events.emit 'pr:decline',
+    context.poller.events.emit 'pr:decline',
       api_url: 'http://test_repo1.com/rest/api/1.0/projects/proj1/repos/repo1/pull-requests'
       pr_id: 103
       pr_url: 'http://test_repo1.com/projects/proj1/repos/repo1/pull-requests/103'

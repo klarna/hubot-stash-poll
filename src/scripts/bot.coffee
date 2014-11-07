@@ -19,9 +19,15 @@ Poller = require '../utils/poller'
 config = require '../config/config'
 
 
+# will be instantiated when bot is activated
+utils =
+  poller: undefined
+  broker: undefined
+
+
 bot = (robot) ->
-  bot.poller = new Poller robot: robot
-  bot.broker = new Broker robot: robot
+  utils.poller = new Poller robot: robot
+  utils.broker = new Broker robot: robot
 
 
   # =========================================================================
@@ -31,7 +37,7 @@ bot = (robot) ->
     room = msg.message.user.room
 
     try
-      repos = bot.broker.getSubscribedReposFor room
+      repos = utils.broker.getSubscribedReposFor room
       urls = repos.map (r) -> r.api_url
       msg.reply "#{room} is subscribing to PR changes from the #{urls.length} repo(s): #{urls.join ', '}"
     catch e
@@ -43,12 +49,12 @@ bot = (robot) ->
     room = msg.message.user.room
 
     try
-      apiUrl = bot.broker.getNormalizedApiUrl msg.match?[1]
+      apiUrl = utils.broker.getNormalizedApiUrl msg.match?[1]
       if not apiUrl?
         msg.reply "Sorry, #{msg.match?[1]} doesn't look like a valid URI to me"
         return
 
-      if bot.broker.tryRegisterRepo apiUrl, room
+      if utils.broker.tryRegisterRepo apiUrl, room
         msg.reply "#{room} is now subscribing to PR changes in repo #{apiUrl}"
       else
         msg.reply "Something went wrong! Could not add subscription for #{apiUrl} in room #{room}"
@@ -60,12 +66,12 @@ bot = (robot) ->
     room = msg.message.user.room
 
     try
-      apiUrl = bot.broker.getNormalizedApiUrl msg.match?[1]
+      apiUrl = utils.broker.getNormalizedApiUrl msg.match?[1]
       if not apiUrl?
         msg.reply "Sorry, #{msg.match?[1]} doesn't look like a valid URI to me"
         return
 
-      if bot.broker.tryUnregisterRepo apiUrl, room
+      if utils.broker.tryUnregisterRepo apiUrl, room
         msg.reply "#{room} is no longer subscribing to PR changes in repo #{apiUrl}"
       else
         msg.reply "Something went wrong! Could not unsubscibe from #{apiUrl} in room #{room}"
@@ -85,19 +91,19 @@ bot = (robot) ->
       robot.messageRoom room, message
 
 
-  bot.poller.events.on 'pr:open', (prData) ->
+  utils.poller.events.on 'pr:open', (prData) ->
     sendRoomMessages prData, "PR ##{prData.pr_id} opened: #{prData.pr_url}"
 
 
-  bot.poller.events.on 'pr:merge', (prData) ->
+  utils.poller.events.on 'pr:merge', (prData) ->
     sendRoomMessages prData, "PR ##{prData.pr_id} merged: #{prData.pr_url}"
 
 
-  bot.poller.events.on 'pr:decline', (prData) ->
+  utils.poller.events.on 'pr:decline', (prData) ->
     sendRoomMessages prData, "PR ##{prData.pr_id} declined: #{prData.pr_url}"
 
 
-  bot.poller.start()
+  utils.poller.start()
 
 
 module.exports = bot

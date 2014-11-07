@@ -27,7 +27,8 @@
     "mocha": "~1.17.1",
     "nock": "^0.47.0",
     "run-sequence": "^1.0.1",
-    "sinon": "^1.10.3"
+    "sinon": "^1.10.3",
+    "rewire": "^2.1.3"
   },
   "author": "Christoffer Skeppstedt",
   "license": "Apache version 2.0"
