@@ -1,5 +1,5 @@
 var gulp = require('gulp'),
-    mocha = require('gulp-mocha'),
+    mocha = require('gulp-spawn-mocha'),
     coffeescript = require('coffee-script'),
     coffeelint = require('gulp-coffeelint'),
     runSequence = require('run-sequence'),
@@ -16,22 +16,27 @@ gulp.task('lint', function () {
 
 gulp.task('mocha', function() {
     return gulp.src(['test/**/*.spec.coffee'], { read: false })
-        .pipe(mocha({ reporter: 'list' }))
+        .pipe(mocha({
+            reporter: 'list',
+            compilers: 'coffee:coffee-script',
+            env: { 'NODE_ENV': 'test' }
+        }))
         .pipe(exit());
 });
 
 
-gulp.task('mocha-min', function() {
+gulp.task('mocha-watch', function() {
     return gulp.src(['test/**/*.spec.coffee'], { read: false })
         .pipe(mocha({
             reporter: 'min',
-            growl: true
+            compilers: 'coffee:coffee-script',
+            env: { 'NODE_ENV': 'test' }
         }));
 });
 
 
 gulp.task('watch', function() {
-    return gulp.watch(['test/**/*.coffee', 'src/**/*.coffee'], ['lint', 'mocha-min']);
+    return gulp.watch(['test/**/*.coffee', 'src/**/*.coffee'], ['lint', 'mocha-watch']);
 });
 
 
