@@ -1,3 +1,6 @@
+repoNameRe = new RegExp 'projects/([^/]+)/repos/([^/]+)'
+
+
 module.exports =
   # =========================================================================
   #  LIST
@@ -12,7 +15,8 @@ module.exports =
       ]
 
       for repo in repos
-        lines.push "  - #{repo.api_url}"
+        name = module.exports.repoFriendlyNameFromUrl(repo.api_url) or repo.api_url
+        lines.push "  - #{name}"
 
         if repo.pull_requests?
           for id, pr of repo.pull_requests
@@ -22,6 +26,17 @@ module.exports =
 
       lines.join '\n'
 
+
+  # =========================================================================
+  #  REPO NAME
+  # =========================================================================
+  repoFriendlyNameFromUrl: (api_url) ->
+    matches = api_url?.match repoNameRe
+
+    if matches? and matches[1]? and matches[2]?
+      "#{matches[1]}/#{matches[2]}"
+    else
+      undefined
 
 
   # =========================================================================

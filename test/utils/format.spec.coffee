@@ -58,6 +58,27 @@ describe 'utils | format', ->
       expect(format.listRepos repos, room).to.eql expected
 
 
+    it 'should use friendly repo names if possible', ->
+      # given
+      room = '#mocha'
+      repos = [
+        api_url: 'http://test_repo1.com/rest/api/1.0/projects/proj1/repos/repo1/pull-requests'
+        repo_name: 'proj1/repo1'
+      ,
+        api_url: 'http://r2.com/'
+      ]
+
+      expected =
+        """
+        #mocha is subscribing to PR changes from 2 repo(s):
+          - proj1/repo1
+          - http://r2.com/
+        """
+
+      # then
+      expect(format.listRepos repos, room).to.eql expected
+
+
 
     it 'should list all open pull requests inside repos', ->
       # given
@@ -131,3 +152,30 @@ describe 'utils | format', ->
 
       # then
       expect(format.pr.declined input).to.eql expected
+
+
+  # =========================================================================
+  #  .repoFriendlyNameFromUrl()
+  # =========================================================================
+  describe '.repoFriendlyNameFromUrl', ->
+    it 'should return a name for a matching URL', ->
+      # given
+      api_url = 'http://test_repo1.com/rest/api/1.0/projects/foo-inc/repos/bar.git/pull-requests'
+
+      # then
+      expect(format.repoFriendlyNameFromUrl api_url).to.eql 'foo-inc/bar.git'
+
+
+    it 'should return undefined for a non-matching URL', ->
+      # given
+      api_urls = [
+        'http://mocha.com/'
+        'http://asdf.com/api/projects/asdf/'
+        'http://asdf.com/api/projects/asdf/repos/'
+        ''
+        undefined
+      ]
+
+      # then
+      for url in api_urls
+        expect(format.repoFriendlyNameFromUrl url).to.eql undefined
