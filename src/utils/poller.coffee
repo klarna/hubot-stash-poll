@@ -20,7 +20,11 @@ class Poller
     return if @intervalId?
 
     @intervalId = setInterval =>
-      @fetchRepositories()
+      # Don't fetch anything if the Poller was
+      # started in a test environment.
+      if process.env.NODE_ENV isnt 'test'
+        @fetchRepositories()
+
     , @pollInterval
 
 
