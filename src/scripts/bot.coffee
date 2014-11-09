@@ -17,7 +17,7 @@
 Broker = require '../utils/broker'
 Poller = require '../utils/poller'
 config = require '../config/config'
-
+format = require '../utils/format'
 
 # will be instantiated when bot is activated
 utils =
@@ -38,8 +38,7 @@ bot = (robot) ->
 
     try
       repos = utils.broker.getSubscribedReposFor room
-      urls = repos.map (r) -> r.api_url
-      msg.reply "#{room} is subscribing to PR changes from the #{urls.length} repo(s): #{urls.join ', '}"
+      msg.reply format.listRepos repos, room
     catch e
       msg.reply "An exception occurred! Could not list subscriptions for room #{room}. Message: #{e.message}"
 
@@ -92,15 +91,15 @@ bot = (robot) ->
 
 
   utils.poller.events.on 'pr:open', (prData) ->
-    sendRoomMessages prData, "PR ##{prData.pr_id} opened: #{prData.pr_url}"
+    sendRoomMessages prData, format.pr.opened(prData)
 
 
   utils.poller.events.on 'pr:merge', (prData) ->
-    sendRoomMessages prData, "PR ##{prData.pr_id} merged: #{prData.pr_url}"
+    sendRoomMessages prData, format.pr.merged(prData)
 
 
   utils.poller.events.on 'pr:decline', (prData) ->
-    sendRoomMessages prData, "PR ##{prData.pr_id} declined: #{prData.pr_url}"
+    sendRoomMessages prData, format.pr.declined(prData)
 
 
   utils.poller.start()

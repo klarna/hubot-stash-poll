@@ -107,6 +107,7 @@ class Poller
         api_url: forRepo.api_url
         pr_id: pr.id
         pr_url: pr_url
+        pr_title: pr.title
 
 
 
