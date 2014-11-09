@@ -9,7 +9,7 @@ config = require '../config/config'
 # and will emit events when it sees new/updated pull requests.
 ###
 class Poller
-  pollInterval: 60 * 1000 # milliseconds
+  pollInterval: config.pollIntervalMilliseconds
 
 
   constructor: ({@robot}) ->
