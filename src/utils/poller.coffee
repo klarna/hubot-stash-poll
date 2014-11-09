@@ -9,7 +9,7 @@ config = require '../config/config'
 # and will emit events when it sees new/updated pull requests.
 ###
 class Poller
-  pollInterval: 60 * 1000 # milliseconds
+  pollInterval: config.pollIntervalMilliseconds
 
 
   constructor: ({@robot}) ->
@@ -20,7 +20,11 @@ class Poller
     return if @intervalId?
 
     @intervalId = setInterval =>
-      @fetchRepositories()
+      # Don't fetch anything if the Poller was
+      # started in a test environment.
+      if process.env.NODE_ENV isnt 'test'
+        @fetchRepositories()
+
     , @pollInterval
 
 
@@ -107,6 +111,7 @@ class Poller
         api_url: forRepo.api_url
         pr_id: pr.id
         pr_url: pr_url
+        pr_title: pr.title
 
 
 

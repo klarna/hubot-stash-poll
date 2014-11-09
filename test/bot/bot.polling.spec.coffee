@@ -52,13 +52,16 @@ describe 'bot | polling', ->
       helpers.asyncAssert done, ->
         # then
         expect(envelope.room).to.equal '#mocha'
-        expect(strings[0]).to.equal "PR #103 opened: http://test_repo1.com/projects/proj1/repos/repo1/pull-requests/103"
+        expect(strings[0]).to.equal "#103 (Pr 103, Repo 1, Project 1) opened: " +
+          "http://test_repo1.com/projects/proj1/repos/repo1/pull-requests/103"
 
     # when
     context.poller.events.emit 'pr:open',
       api_url: 'http://test_repo1.com/rest/api/1.0/projects/proj1/repos/repo1/pull-requests'
       pr_id: 103
       pr_url: 'http://test_repo1.com/projects/proj1/repos/repo1/pull-requests/103'
+      pr_title: 'Pr 103, Repo 1, Project 1'
+
 
 
   it 'should send a group message on merged PR', (done) ->
@@ -72,13 +75,15 @@ describe 'bot | polling', ->
       helpers.asyncAssert done, ->
         # then
         expect(envelope.room).to.equal '#mocha'
-        expect(strings[0]).to.equal "PR #103 merged: http://test_repo1.com/projects/proj1/repos/repo1/pull-requests/103"
+        expect(strings[0]).to.equal "#103 (Pr 103, Repo 1, Project 1) merged: " +
+          "http://test_repo1.com/projects/proj1/repos/repo1/pull-requests/103"
 
     # when
     context.poller.events.emit 'pr:merge',
       api_url: 'http://test_repo1.com/rest/api/1.0/projects/proj1/repos/repo1/pull-requests'
       pr_id: 103
       pr_url: 'http://test_repo1.com/projects/proj1/repos/repo1/pull-requests/103'
+      pr_title: 'Pr 103, Repo 1, Project 1'
 
 
   it 'should send a group message on declined PR', (done) ->
@@ -92,10 +97,12 @@ describe 'bot | polling', ->
       helpers.asyncAssert done, ->
         # then
         expect(envelope.room).to.equal '#mocha'
-        expect(strings[0]).to.equal "PR #103 declined: http://test_repo1.com/projects/proj1/repos/repo1/pull-requests/103"
+        expect(strings[0]).to.equal "#103 (Pr 103, Repo 1, Project 1) declined: " +
+          "http://test_repo1.com/projects/proj1/repos/repo1/pull-requests/103"
 
     # when
     context.poller.events.emit 'pr:decline',
       api_url: 'http://test_repo1.com/rest/api/1.0/projects/proj1/repos/repo1/pull-requests'
       pr_id: 103
       pr_url: 'http://test_repo1.com/projects/proj1/repos/repo1/pull-requests/103'
+      pr_title: 'Pr 103, Repo 1, Project 1'

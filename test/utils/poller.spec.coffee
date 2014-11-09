@@ -31,12 +31,15 @@ describe 'utils | poller', ->
         '101':
           state: 'OPEN'
           url: 'http://test_repo1.com/projects/proj1/repos/repo1/pull-requests/101'
+          title: 'Pr 101, Repo 1, Project 1'
         '102':
           state: 'MERGED'
           url: 'http://test_repo1.com/projects/proj1/repos/repo1/pull-requests/102'
+          title: 'Pr 102, Repo 1, Project 1'
         '103':
           state: 'DECLINED'
           url: 'http://test_repo1.com/projects/proj1/repos/repo1/pull-requests/103'
+          title: 'Pr 103, Repo 1, Project 1'
     ,
       api_url: 'http://test_repo2.com/rest/api/1.0/projects/proj2/repos/repo2/pull-requests'
       rooms: ['#mocha']
@@ -106,6 +109,7 @@ describe 'utils | poller', ->
         api_url: 'http://test_repo1.com/rest/api/1.0/projects/proj1/repos/repo1/pull-requests'
         pr_id: 104
         pr_url: 'http://test_repo1.com/projects/proj1/repos/repo1/pull-requests/104'
+        pr_title: 'Pr 104, Repo 1, Project 1'
 
       spy = context.sandbox.spy()
       onEmit 'pr:open', spy
@@ -128,6 +132,7 @@ describe 'utils | poller', ->
         api_url: 'http://test_repo1.com/rest/api/1.0/projects/proj1/repos/repo1/pull-requests'
         pr_id: 102
         pr_url: 'http://test_repo1.com/projects/proj1/repos/repo1/pull-requests/102'
+        pr_title: 'Pr 102, Repo 1, Project 1'
 
       spy = context.sandbox.spy()
       onEmit 'pr:merge', spy
@@ -150,6 +155,7 @@ describe 'utils | poller', ->
         api_url: 'http://test_repo1.com/rest/api/1.0/projects/proj1/repos/repo1/pull-requests'
         pr_id: 103
         pr_url: 'http://test_repo1.com/projects/proj1/repos/repo1/pull-requests/103'
+        pr_title: 'Pr 103, Repo 1, Project 1'
 
       spy = context.sandbox.spy()
       onEmit 'pr:decline', spy
@@ -171,6 +177,7 @@ describe 'utils | poller', ->
         api_url: 'http://test_repo1.com/rest/api/1.0/projects/proj1/repos/repo1/pull-requests'
         pr_id: 105
         pr_url: 'http://test_repo1.com/projects/proj1/repos/repo1/pull-requests/105'
+        pr_title: 'Pr 105, Repo 1, Project 1'
 
       spy = context.sandbox.spy()
       onEmit 'pr:merge', spy
@@ -192,6 +199,7 @@ describe 'utils | poller', ->
         api_url: 'http://test_repo1.com/rest/api/1.0/projects/proj1/repos/repo1/pull-requests'
         pr_id: 106
         pr_url: 'http://test_repo1.com/projects/proj1/repos/repo1/pull-requests/106'
+        pr_title: 'Pr 106, Repo 1, Project 1'
 
       spy = context.sandbox.spy()
       onEmit 'pr:decline', spy
@@ -246,6 +254,7 @@ describe 'utils | poller', ->
         api_url: 'http://test_repo1.com/rest/api/1.0/projects/proj1/repos/repo1/pull-requests'
         pr_id: 103
         pr_url: 'http://test_repo1.com/projects/proj1/repos/repo1/pull-requests/103'
+        pr_title: 'Pr 103, Repo 1, Project 1'
 
       spy = context.sandbox.spy()
       onEmit 'pr:decline', spy
