@@ -41,10 +41,19 @@ describe 'commands | pr | subscribe', ->
       context.robot.adapter.receive new TextMessage(context.user, "#{context.robot.name} stash-poll add !@£$%")
 
 
-    it 'should acknowledge a repo subscription', (done) ->
+    it 'should acknowledge a repo subscription with friendly name if possible', (done) ->
+      url = 'http://a.com/api/projects/asdf/repos/f00'
       context.robot.adapter.on 'reply', (envelope, strings) ->
         helpers.asyncAssert done, ->
-          expect(strings[0]).to.equal "#{envelope.room} is now subscribing to PR changes in repo http://gogogo.com/"
+          expect(strings[0]).to.equal "#{envelope.room} is now subscribing to PR changes from asdf/f00"
+
+      context.robot.adapter.receive new TextMessage(context.user, "#{context.robot.name} stash-poll add #{url}")
+
+
+    it 'should acknowledge a repo subscription with api url if friendly name not possible', (done) ->
+      context.robot.adapter.on 'reply', (envelope, strings) ->
+        helpers.asyncAssert done, ->
+          expect(strings[0]).to.equal "#{envelope.room} is now subscribing to PR changes from http://gogogo.com/"
 
       context.robot.adapter.receive new TextMessage(context.user, "#{context.robot.name} stash-poll add http://gogogo.com/")
 
