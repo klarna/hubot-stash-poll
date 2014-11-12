@@ -90,10 +90,17 @@ describe 'utils | format', ->
             id: '8'
             title: 'Bar request'
             url: 'http://r1.com/pr/8'
+            state: 'MERGED'
           '123':
             id: '123'
             title: 'Foo request'
             url: 'http://r1.com/pr/123'
+            state: 'OPEN'
+          '55':
+            id: '123'
+            title: 'Foo request'
+            url: 'http://r1.com/pr/123'
+            state: 'DECLINED'
       ,
         api_url: 'http://r2.com/'
       ]
@@ -102,7 +109,6 @@ describe 'utils | format', ->
         """
         #mocha is subscribing to PR changes from 2 repo(s):
           - http://r1.com/
-            - #8 (Bar request): http://r1.com/pr/8
             - #123 (Foo request): http://r1.com/pr/123
           - http://r2.com/
         """

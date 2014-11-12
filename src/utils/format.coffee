@@ -19,7 +19,7 @@ module.exports =
         lines.push "  - #{name}"
 
         if repo.pull_requests?
-          for id, pr of repo.pull_requests
+          for id, pr of repo.pull_requests when pr.state is 'OPEN'
             pr = repo.pull_requests[id]
             formatted = "##{id} (#{pr.title}): #{pr.url}"
             lines.push "    - #{formatted}"
