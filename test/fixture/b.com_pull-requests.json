@@ -10,7 +10,7 @@
       "links": {
         "self": [
           {
-            "href": "http://test_repo2.com/projects/proj2/repos/repo1/pull-requests/201"
+            "href": "http://b.com/projects/proj2/repos/repo1/pull-requests/201"
           }
         ]
       }
@@ -22,7 +22,7 @@
       "links": {
         "self": [
           {
-            "href": "http://test_repo2.com/projects/proj2/repos/repo1/pull-requests/202"
+            "href": "http://b.com/projects/proj2/repos/repo1/pull-requests/202"
           }
         ]
       }
@@ -34,7 +34,7 @@
       "links": {
         "self": [
           {
-            "href": "http://test_repo2.com/projects/proj2/repos/repo1/pull-requests/203"
+            "href": "http://b.com/projects/proj2/repos/repo1/pull-requests/203"
           }
         ]
       }
@@ -46,7 +46,7 @@
       "links": {
         "self": [
           {
-            "href": "http://test_repo2.com/projects/proj2/repos/repo1/pull-requests/204"
+            "href": "http://b.com/projects/proj2/repos/repo1/pull-requests/204"
           }
         ]
       }
@@ -58,7 +58,7 @@
       "links": {
         "self": [
           {
-            "href": "http://test_repo2.com/projects/proj2/repos/repo1/pull-requests/205"
+            "href": "http://b.com/projects/proj2/repos/repo1/pull-requests/205"
           }
         ]
       }
@@ -70,7 +70,7 @@
       "links": {
         "self": [
           {
-            "href": "http://test_repo2.com/projects/proj2/repos/repo1/pull-requests/206"
+            "href": "http://b.com/projects/proj2/repos/repo1/pull-requests/206"
           }
         ]
       }
