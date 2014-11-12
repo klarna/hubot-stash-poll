@@ -1,4 +1,9 @@
+fs = require 'fs'
+path = require 'path'
 Q = require 'q'
+url = require 'url'
+nock = require 'nock'
+format = require '../src/utils/format'
 TextMessage = require('hubot/src/message').TextMessage
 
 
@@ -22,6 +27,7 @@ module.exports =
           reject e
 
       robot.adapter.receive new TextMessage(user, "#{robot.name} #{message}")
+
 
   brainFor: (robot) ->
     ctx =
@@ -56,4 +62,11 @@ module.exports =
         ctx.brain
 
     api
+
+
+  nocksFor: (robot) ->
+    for api_url, repo of robot.brain.data['stash-poll']
+      u = url.parse repo.api_url
+      do (u) -> nock("#{u.protocol}//#{u.host}").get("#{u.path}?state=ALL").reply 200, ->
+        fs.createReadStream(path.resolve "test/fixture/#{u.hostname}_pull-requests.json")
 
