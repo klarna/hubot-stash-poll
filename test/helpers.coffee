@@ -70,3 +70,12 @@ module.exports =
       do (u) -> nock("#{u.protocol}//#{u.host}").get("#{u.path}?state=ALL").reply 200, ->
         fs.createReadStream(path.resolve "test/fixture/#{u.hostname}_pull-requests.json")
 
+
+  asEmittedPR: (pull_request) ->
+    format.pr.toEmitFormat
+      id: parseInt pull_request.url.split('/').reverse()[0], 10
+      url: pull_request.url
+      title: pull_request.title
+      api_url: pull_request.url
+        .replace('/projects/', '/rest/api/1.0/projects/')
+        .replace(/\/\d+$/, '')

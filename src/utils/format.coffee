@@ -51,3 +51,10 @@ module.exports =
 
     declined: (prData) ->
       "##{prData.pr_id} (#{prData.pr_title}) declined: #{prData.pr_url}"
+
+
+    toEmitFormat: ({id, url, title, api_url}) ->
+      pr_id: id
+      pr_url: url
+      pr_title: title
+      api_url: api_url

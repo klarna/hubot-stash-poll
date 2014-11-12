@@ -154,6 +154,22 @@ describe 'utils | format', ->
       expect(format.pr.declined input).to.eql expected
 
 
+    it 'should transform to emit format', ->
+      # given
+      input =
+        id: 123
+        url: 'foo.bar'
+        title: 'abc'
+        api_url: 'api.foo'
+
+      # then
+      expect(format.pr.toEmitFormat input).to.eql
+        pr_id: 123
+        pr_url: 'foo.bar'
+        pr_title: 'abc'
+        api_url: 'api.foo'
+
+
   # =========================================================================
   #  .repoFriendlyNameFromUrl()
   # =========================================================================
