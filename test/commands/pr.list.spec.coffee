@@ -44,29 +44,19 @@ describe 'commands | pr | list', ->
   describe 'given a non-empty brain', ->
     it 'should list all repos that the room is subscribed to', ->
       # given
-      context.robot.brain.data['stash-poll'] =
-        'http://mocha.com/':
-          api_url: 'http://mocha.com/'
-          rooms: ['#mocha']
-          pull_requests:
-            '123':
-              id: '123'
-              title: 'Foo request'
-              url: 'http://mocha.com/pr/123'
-            '8':
-              id: '8'
-              title: 'Bar request'
-              url: 'http://mocha.com/pr/8'
-        'http://abc.com/':
-          api_url: 'http://abc.com/'
-          rooms: ['#mocha', '#abc']
+      helpers.brainFor(context.robot)
+        .repo('http://a.com', ['#mocha'])
+          .pr('1', 'MERGED')
+          .pr('2', 'OPEN')
+        .repo('http://b.com', ['#abc','#mocha'])
+          .pr('3', 'DECLINED')
+        .repo('http://c.com', ['#abc'])
 
       expected = """
                  #mocha is subscribing to PR changes from 2 repo(s):
-                   - http://mocha.com/
-                     - #8 (Bar request): http://mocha.com/pr/8
-                     - #123 (Foo request): http://mocha.com/pr/123
-                   - http://abc.com/
+                   - http://a.com
+                     - #2 (#2 @ http://a.com/2): http://a.com/2
+                   - http://b.com
                  """
 
       # when/then
