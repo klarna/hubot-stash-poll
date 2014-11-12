@@ -2,6 +2,7 @@ url = require 'url'
 Q = require 'q'
 {EventEmitter} = require 'events'
 config = require '../config/config'
+format = require './format'
 
 
 ###
@@ -99,19 +100,18 @@ class Poller
 
       # update/insert PR state
       forRepo.pull_requests ||= {}
-      if not forRepo.pull_requests[pr.id]?
-        forRepo.pull_requests[pr.id] =
-          id: pr.id
-          title: pr.title
-          url: pr_url
+      forRepo.pull_requests[pr.id] ||= {}
 
+      forRepo.pull_requests[pr.id].id = pr.id
+      forRepo.pull_requests[pr.id].title = pr.title
+      forRepo.pull_requests[pr.id].url = pr_url
       forRepo.pull_requests[pr.id].state = pr.state
 
-      @events.emit eventName,
+      @events.emit eventName, format.pr.toEmitFormat
+        id: pr.id
+        url: pr_url
+        title: pr.title
         api_url: forRepo.api_url
-        pr_id: pr.id
-        pr_url: pr_url
-        pr_title: pr.title
 
 
 

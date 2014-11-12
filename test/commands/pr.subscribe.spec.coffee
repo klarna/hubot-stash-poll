@@ -1,5 +1,4 @@
 expect = require('chai').expect
-TextMessage = require('hubot/src/message').TextMessage
 
 testContext = require('../test_context')
 bot = require('../../src/scripts/bot')
@@ -10,7 +9,6 @@ helpers = require('../helpers')
 describe 'commands | pr | subscribe', ->
   context = {}
 
-
   beforeEach (done) ->
     testContext (testContext) ->
       context.robot = testContext.robot
@@ -19,9 +17,19 @@ describe 'commands | pr | subscribe', ->
       bot(context.robot)
       done()
 
-
   afterEach ->
     context.sandbox.restore()
+
+
+
+  # =========================================================================
+  #  INTERNAL TEST HELPERS
+  # =========================================================================
+  whenAdding = (api_url, expectCallback) ->
+    message = "stash-poll add #{api_url}"
+    helpers.onRobotReply context.robot, context.user, message, (replyData) ->
+      replyData.referencedRepo = context.robot.brain.data['stash-poll']?[api_url]
+      expectCallback(replyData)
 
 
 
@@ -33,20 +41,19 @@ describe 'commands | pr | subscribe', ->
       expect(context.robot.respond.withArgs(/stash-poll add (.*)/i).calledOnce).to.equal true
 
 
-    it 'should send an error message when uri is invalid', (done) ->
-      context.robot.adapter.on 'reply', (envelope, strings) ->
-        helpers.asyncAssert done, ->
-          expect(strings[0]).to.equal "Sorry, !@£$% doesn't look like a valid URI to me"
-
-      context.robot.adapter.receive new TextMessage(context.user, "#{context.robot.name} stash-poll add !@£$%")
+    it 'should send an error message when uri is invalid', ->
+      whenAdding '!@£$%', ({envelope, strings})->
+        expect(strings[0]).to.equal "Sorry, !@£$% doesn't look like a valid URI to me"
 
 
-    it 'should acknowledge a repo subscription', (done) ->
-      context.robot.adapter.on 'reply', (envelope, strings) ->
-        helpers.asyncAssert done, ->
-          expect(strings[0]).to.equal "#{envelope.room} is now subscribing to PR changes in repo http://gogogo.com/"
+    it 'should acknowledge a repo subscription with friendly name if possible', ->
+      whenAdding 'http://a.com/api/projects/asdf/repos/f00', ({envelope, strings})->
+        expect(strings[0]).to.equal "#{envelope.room} is now subscribing to PR changes from asdf/f00"
 
-      context.robot.adapter.receive new TextMessage(context.user, "#{context.robot.name} stash-poll add http://gogogo.com/")
+
+    it 'should acknowledge a repo subscription with api url if friendly name not possible', ->
+      whenAdding 'http://gogogo.com/', ({envelope, strings})->
+        expect(strings[0]).to.equal "#{envelope.room} is now subscribing to PR changes from http://gogogo.com/"
 
 
 
@@ -54,13 +61,10 @@ describe 'commands | pr | subscribe', ->
   #  EMPTY BRAIN
   # =========================================================================
   describe 'given an empty brain', ->
-    it 'should save a new repo subscription to the brain', (done) ->
-      context.robot.adapter.on 'reply', (envelope, strings) ->
-        helpers.asyncAssert done, ->
-          expect(context.robot.brain.data['stash-poll']['http://gogogo.com/'].api_url).to.eql 'http://gogogo.com/'
-          expect(context.robot.brain.data['stash-poll']['http://gogogo.com/'].rooms).to.eql [envelope.room]
-
-      context.robot.adapter.receive new TextMessage(context.user, "#{context.robot.name} stash-poll add http://gogogo.com/")
+    it 'should save a new repo subscription to the brain', ->
+      whenAdding 'http://gogogo.com/', ({referencedRepo, envelope})->
+        expect(referencedRepo.api_url).to.eql 'http://gogogo.com/'
+        expect(referencedRepo.rooms).to.eql [envelope.room]
 
 
 
@@ -78,17 +82,11 @@ describe 'commands | pr | subscribe', ->
           rooms: ['#mocha']
 
 
-    it 'should push the room to a repo if it doesn\'t already exist', (done) ->
-      context.robot.adapter.on 'reply', (envelope, strings) ->
-        helpers.asyncAssert done, ->
-          expect(context.robot.brain.data['stash-poll']['http://abc.com/'].rooms).to.eql ['#abc','#mocha']
-
-      context.robot.adapter.receive new TextMessage(context.user, "#{context.robot.name} stash-poll add http://abc.com/")
+    it 'should push the room to a repo if it doesn\'t already exist', ->
+      whenAdding 'http://abc.com/', ({referencedRepo})->
+        expect(referencedRepo.rooms).to.eql ['#abc','#mocha']
 
 
-    it 'should not push the room to a repo if it already exists', (done) ->
-      context.robot.adapter.on 'reply', (envelope, strings) ->
-        helpers.asyncAssert done, ->
-          expect(context.robot.brain.data['stash-poll']['http://mocha.com/'].rooms).to.eql ['#mocha']
-
-      context.robot.adapter.receive new TextMessage(context.user, "#{context.robot.name} stash-poll add http://mocha.com/")
+    it 'should not push the room to a repo if it already exists', ->
+      whenAdding 'http://mocha.com/', ({referencedRepo})->
+        expect(referencedRepo.rooms).to.eql ['#mocha']
