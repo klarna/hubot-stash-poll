@@ -4,6 +4,7 @@ rewire = require('rewire')
 
 # dependencies/helpers
 TextMessage = require('hubot/src/message').TextMessage
+format = require('../../src/utils/format')
 helpers = require('../helpers')
 testContext = require('../test_context')
 
@@ -43,66 +44,57 @@ describe 'bot | polling', ->
   # =========================================================================
   it 'should send a group message on opened PR', (done) ->
     # given
-    context.robot.brain.data['stash-poll'] =
-      'http://test_repo1.com/rest/api/1.0/projects/proj1/repos/repo1/pull-requests':
-        api_url: 'http://test_repo1.com/rest/api/1.0/projects/proj1/repos/repo1/pull-requests'
-        rooms: ['#mocha']
+    pr = helpers.brainFor(context.robot)
+      .repo('http://a.test/rest/api/1.0/projects/p1/repos/r1/pull-requests', ['#mocha'])
+      .pr('103', 'OPEN')
+      .pr()
+
+    emitted = helpers.asEmittedPR(pr)
 
     context.robot.adapter.on 'send', (envelope, strings) ->
       helpers.asyncAssert done, ->
         # then
         expect(envelope.room).to.equal '#mocha'
-        expect(strings[0]).to.equal "#103 (Pr 103, Repo 1, Project 1) opened: " +
-          "http://test_repo1.com/projects/proj1/repos/repo1/pull-requests/103"
+        expect(strings[0]).to.equal format.pr.opened(emitted)
 
     # when
-    context.poller.events.emit 'pr:open',
-      api_url: 'http://test_repo1.com/rest/api/1.0/projects/proj1/repos/repo1/pull-requests'
-      pr_id: 103
-      pr_url: 'http://test_repo1.com/projects/proj1/repos/repo1/pull-requests/103'
-      pr_title: 'Pr 103, Repo 1, Project 1'
+    context.poller.events.emit 'pr:open', emitted
 
 
 
   it 'should send a group message on merged PR', (done) ->
     # given
-    context.robot.brain.data['stash-poll'] =
-      'http://test_repo1.com/rest/api/1.0/projects/proj1/repos/repo1/pull-requests':
-        api_url: 'http://test_repo1.com/rest/api/1.0/projects/proj1/repos/repo1/pull-requests'
-        rooms: ['#mocha']
+    pr = helpers.brainFor(context.robot)
+      .repo('http://a.test/rest/api/1.0/projects/p1/repos/r1/pull-requests', ['#mocha'])
+      .pr('103', 'MERGED')
+      .pr()
+
+    emitted = helpers.asEmittedPR(pr)
 
     context.robot.adapter.on 'send', (envelope, strings) ->
       helpers.asyncAssert done, ->
         # then
         expect(envelope.room).to.equal '#mocha'
-        expect(strings[0]).to.equal "#103 (Pr 103, Repo 1, Project 1) merged: " +
-          "http://test_repo1.com/projects/proj1/repos/repo1/pull-requests/103"
+        expect(strings[0]).to.equal format.pr.merged(emitted)
 
     # when
-    context.poller.events.emit 'pr:merge',
-      api_url: 'http://test_repo1.com/rest/api/1.0/projects/proj1/repos/repo1/pull-requests'
-      pr_id: 103
-      pr_url: 'http://test_repo1.com/projects/proj1/repos/repo1/pull-requests/103'
-      pr_title: 'Pr 103, Repo 1, Project 1'
+    context.poller.events.emit 'pr:merge', emitted
 
 
   it 'should send a group message on declined PR', (done) ->
     # given
-    context.robot.brain.data['stash-poll'] =
-      'http://test_repo1.com/rest/api/1.0/projects/proj1/repos/repo1/pull-requests':
-        api_url: 'http://test_repo1.com/rest/api/1.0/projects/proj1/repos/repo1/pull-requests'
-        rooms: ['#mocha']
+    pr = helpers.brainFor(context.robot)
+      .repo('http://a.test/rest/api/1.0/projects/p1/repos/r1/pull-requests', ['#mocha'])
+      .pr('103', 'DECLINED')
+      .pr()
+
+    emitted = helpers.asEmittedPR(pr)
 
     context.robot.adapter.on 'send', (envelope, strings) ->
       helpers.asyncAssert done, ->
         # then
         expect(envelope.room).to.equal '#mocha'
-        expect(strings[0]).to.equal "#103 (Pr 103, Repo 1, Project 1) declined: " +
-          "http://test_repo1.com/projects/proj1/repos/repo1/pull-requests/103"
+        expect(strings[0]).to.equal format.pr.declined(emitted)
 
     # when
-    context.poller.events.emit 'pr:decline',
-      api_url: 'http://test_repo1.com/rest/api/1.0/projects/proj1/repos/repo1/pull-requests'
-      pr_id: 103
-      pr_url: 'http://test_repo1.com/projects/proj1/repos/repo1/pull-requests/103'
-      pr_title: 'Pr 103, Repo 1, Project 1'
+    context.poller.events.emit 'pr:decline', emitted
