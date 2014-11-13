@@ -73,13 +73,9 @@ describe 'commands | pr | subscribe', ->
   # =========================================================================
   describe 'given a non-empty brain', ->
     beforeEach ->
-      context.robot.brain.data['stash-poll'] =
-        'http://abc.com/':
-          api_url: 'http://abc.com/'
-          rooms: ['#abc']
-        'http://mocha.com/':
-          api_url: 'http://mocha.com/'
-          rooms: ['#mocha']
+      helpers.brainFor(context.robot)
+        .repo('http://abc.com/', ['#abc'])
+        .repo('http://mocha.com/', ['#mocha'])
 
 
     it 'should push the room to a repo if it doesn\'t already exist', ->
