@@ -1,5 +1,9 @@
+# test framework
 expect = require('chai').expect
+
+# test target
 helpers = require './helpers'
+
 
 describe 'helpers', ->
   describe 'brainFor', ->

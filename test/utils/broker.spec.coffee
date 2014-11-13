@@ -1,6 +1,11 @@
+# test framework
 expect = require('chai').expect
-testContext = require('../test_context')
+
+# dependencies/helpers
 helpers = require('../helpers')
+testContext = require('../test_context')
+
+# test target
 Broker = require('../../src/utils/broker')
 
 
@@ -19,7 +24,6 @@ describe 'utils | broker', ->
 
   afterEach ->
     context.sandbox.restore()
-
 
 
   # =========================================================================
@@ -60,7 +64,6 @@ describe 'utils | broker', ->
 
         # then
         expect(brain['http://mocha.com/'].rooms).to.eql ['#mocha']
-
 
 
   # =========================================================================
@@ -116,5 +119,3 @@ describe 'utils | broker', ->
         api_url: 'http://123.com/'
         rooms: ['#mocha']
       ]
-
-

@@ -3,14 +3,12 @@ expect = require('chai').expect
 rewire = require('rewire')
 
 # dependencies/helpers
-TextMessage = require('hubot/src/message').TextMessage
 format = require('../../src/utils/format')
 helpers = require('../helpers')
 testContext = require('../test_context')
 
 # test target
 bot = rewire('../../src/scripts/bot')
-
 
 
 describe 'bot | polling', ->
@@ -25,10 +23,8 @@ describe 'bot | polling', ->
       context.poller = bot.__get__('utils').poller
       done()
 
-
   afterEach ->
     context.sandbox.restore()
-
 
 
   # =========================================================================
@@ -36,7 +32,6 @@ describe 'bot | polling', ->
   # =========================================================================
   it 'should start the Poller on startup', ->
     expect(context.poller.intervalId?).to.equal true
-
 
 
   # =========================================================================
@@ -59,7 +54,6 @@ describe 'bot | polling', ->
 
     # when
     context.poller.events.emit 'pr:open', emitted
-
 
 
   it 'should send a group message on merged PR', (done) ->

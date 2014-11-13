@@ -1,8 +1,12 @@
+# test framework
 expect = require('chai').expect
 
-testContext = require('../test_context')
-bot = require('../../src/scripts/bot')
+# dependencies/helpers
 helpers = require('../helpers')
+testContext = require('../test_context')
+
+# test target
+bot = require('../../src/scripts/bot')
 
 
 describe 'commands | pr | list', ->
@@ -20,7 +24,6 @@ describe 'commands | pr | list', ->
     context.sandbox.restore()
 
 
-
   # =========================================================================
   #  INTERNAL TEST HELPERS
   # =========================================================================
@@ -29,13 +32,11 @@ describe 'commands | pr | list', ->
     helpers.onRobotReply context.robot, context.user, message, expectCallback
 
 
-
   # =========================================================================
   #  LISTENER
   # =========================================================================
   it 'should register a listener', ->
     expect(context.robot.respond.withArgs(/stash-poll$/i).calledOnce).to.equal true
-
 
 
   # =========================================================================

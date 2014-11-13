@@ -1,9 +1,12 @@
+# test framework
 expect = require('chai').expect
 
-testContext = require('../test_context')
-bot = require('../../src/scripts/bot')
+# dependencies/helpers
 helpers = require('../helpers')
+testContext = require('../test_context')
 
+# test target
+bot = require('../../src/scripts/bot')
 
 
 describe 'commands | pr | subscribe', ->
@@ -21,7 +24,6 @@ describe 'commands | pr | subscribe', ->
     context.sandbox.restore()
 
 
-
   # =========================================================================
   #  INTERNAL TEST HELPERS
   # =========================================================================
@@ -30,7 +32,6 @@ describe 'commands | pr | subscribe', ->
     helpers.onRobotReply context.robot, context.user, message, (replyData) ->
       replyData.referencedRepo = context.robot.brain.data['stash-poll']?[api_url]
       expectCallback(replyData)
-
 
 
   # =========================================================================
@@ -56,7 +57,6 @@ describe 'commands | pr | subscribe', ->
         expect(strings[0]).to.equal "#{envelope.room} is now subscribing to PR changes from http://gogogo.com/"
 
 
-
   # =========================================================================
   #  EMPTY BRAIN
   # =========================================================================
@@ -65,7 +65,6 @@ describe 'commands | pr | subscribe', ->
       whenAdding 'http://gogogo.com/', ({referencedRepo, envelope})->
         expect(referencedRepo.api_url).to.eql 'http://gogogo.com/'
         expect(referencedRepo.rooms).to.eql [envelope.room]
-
 
 
   # =========================================================================

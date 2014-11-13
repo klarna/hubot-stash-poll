@@ -1,9 +1,9 @@
-fs = require 'fs'
-path = require 'path'
-Q = require 'q'
-url = require 'url'
-nock = require 'nock'
-format = require '../src/utils/format'
+Q = require('q')
+fs = require('fs')
+url = require('url')
+nock = require('nock')
+path = require('path')
+format = require('../src/utils/format')
 TextMessage = require('hubot/src/message').TextMessage
 
 
