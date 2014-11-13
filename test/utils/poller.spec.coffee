@@ -1,11 +1,12 @@
-fs = require 'fs'
-url = require 'url'
-path = require 'path'
+# test framework
 expect = require('chai').expect
-nock = require 'nock'
 
-testContext = require('../test_context')
+# dependencies/helpers
+nock = require 'nock'
 helpers = require('../helpers')
+testContext = require('../test_context')
+
+# test target
 Poller = require('../../src/utils/poller')
 
 
@@ -48,7 +49,6 @@ describe 'utils | poller', ->
     context.listeners.push
       eventName: eventName
       callback: callback
-
 
 
   # =========================================================================
@@ -219,7 +219,6 @@ describe 'utils | poller', ->
 
       # when
       context.fetch()
-
 
 
   # =========================================================================

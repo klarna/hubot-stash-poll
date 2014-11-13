@@ -1,4 +1,7 @@
+# test framework
 expect = require('chai').expect
+
+# test target
 format = require('../../src/utils/format')
 
 
@@ -77,7 +80,6 @@ describe 'utils | format', ->
 
       # then
       expect(format.listRepos repos, room).to.eql expected
-
 
 
     it 'should list all open pull requests inside repos', ->

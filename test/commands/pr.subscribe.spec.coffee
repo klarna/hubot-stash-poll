@@ -1,9 +1,12 @@
+# test framework
 expect = require('chai').expect
 
-testContext = require('../test_context')
-bot = require('../../src/scripts/bot')
+# dependencies/helpers
 helpers = require('../helpers')
+testContext = require('../test_context')
 
+# test target
+bot = require('../../src/scripts/bot')
 
 
 describe 'commands | pr | subscribe', ->
@@ -21,7 +24,6 @@ describe 'commands | pr | subscribe', ->
     context.sandbox.restore()
 
 
-
   # =========================================================================
   #  INTERNAL TEST HELPERS
   # =========================================================================
@@ -30,7 +32,6 @@ describe 'commands | pr | subscribe', ->
     helpers.onRobotReply context.robot, context.user, message, (replyData) ->
       replyData.referencedRepo = context.robot.brain.data['stash-poll']?[api_url]
       expectCallback(replyData)
-
 
 
   # =========================================================================
@@ -56,7 +57,6 @@ describe 'commands | pr | subscribe', ->
         expect(strings[0]).to.equal "#{envelope.room} is now subscribing to PR changes from http://gogogo.com/"
 
 
-
   # =========================================================================
   #  EMPTY BRAIN
   # =========================================================================
@@ -67,19 +67,14 @@ describe 'commands | pr | subscribe', ->
         expect(referencedRepo.rooms).to.eql [envelope.room]
 
 
-
   # =========================================================================
   #  NON-EMPTY BRAIN
   # =========================================================================
   describe 'given a non-empty brain', ->
     beforeEach ->
-      context.robot.brain.data['stash-poll'] =
-        'http://abc.com/':
-          api_url: 'http://abc.com/'
-          rooms: ['#abc']
-        'http://mocha.com/':
-          api_url: 'http://mocha.com/'
-          rooms: ['#mocha']
+      helpers.brainFor(context.robot)
+        .repo('http://abc.com/', ['#abc'])
+        .repo('http://mocha.com/', ['#mocha'])
 
 
     it 'should push the room to a repo if it doesn\'t already exist', ->

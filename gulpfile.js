@@ -17,7 +17,7 @@ gulp.task('lint', function () {
 gulp.task('mocha', function() {
     return gulp.src(['test/**/*.spec.coffee'], { read: false })
         .pipe(mocha({
-            reporter: 'list',
+            reporter: 'tap',
             compilers: 'coffee:coffee-script',
             env: { 'NODE_ENV': 'test' }
         }))

@@ -1,9 +1,12 @@
+# test framework
 expect = require('chai').expect
 
-testContext = require('../test_context')
-bot = require('../../src/scripts/bot')
+# dependencies/helpers
 helpers = require('../helpers')
+testContext = require('../test_context')
 
+# test target
+bot = require('../../src/scripts/bot')
 
 
 describe 'commands | pr | unsubscribe', ->
@@ -21,7 +24,6 @@ describe 'commands | pr | unsubscribe', ->
     context.sandbox.restore()
 
 
-
   # =========================================================================
   #  INTERNAL TEST HELPERS
   # =========================================================================
@@ -32,13 +34,11 @@ describe 'commands | pr | unsubscribe', ->
       expectCallback(replyData)
 
 
-
   # =========================================================================
   #  LISTENER
   # =========================================================================
   it 'should register a listener', ->
     expect(context.robot.respond.withArgs(/stash-poll rm (.*)/i).calledOnce).to.equal true
-
 
 
   # =========================================================================
@@ -47,10 +47,8 @@ describe 'commands | pr | unsubscribe', ->
   describe 'given a non-empty brain', ->
     it 'should unsubscribe the room from the given repo', () ->
       # given
-      context.robot.brain.data['stash-poll'] =
-        'http://mocha.com/':
-          api_url: 'http://mocha.com/'
-          rooms: ['#mocha', '#abc']
+      helpers.brainFor(context.robot)
+        .repo('http://mocha.com/', ['#mocha', '#abc'])
 
       # then
       whenRemoving 'http://mocha.com/', ({referencedRepo, envelope, strings}) ->

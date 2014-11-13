@@ -16,24 +16,13 @@ module.exports = (done) ->
 
   context.robot = new Robot(null, 'mock-adapter', false, 'MOCKBOT')
 
-  context.robot.brain.data['stash-poll'] = {}
-
   context.sandbox.spy context.robot, 'respond'
   context.sandbox.spy context.robot, 'hear'
 
   context.robot.adapter.on 'connected', ->
-    # only load scripts we absolutely need, like auth.coffee
-    process.env.HUBOT_AUTH_ADMIN = '1'
-    scriptsPath = path.resolve(path.join("node_modules/hubot/src/scripts"))
-    context.robot.loadFile scriptsPath, "auth.coffee"
-
-    # create a user
-    context.user = context.robot.brain.userForId('1',
+    context.user = context.robot.brain.userForId '1',
       name: 'mocha'
       room: '#mocha'
-    )
-
-    context.adapter = context.robot.adapter
 
     done(context)
 
