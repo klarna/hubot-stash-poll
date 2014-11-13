@@ -47,10 +47,8 @@ describe 'commands | pr | unsubscribe', ->
   describe 'given a non-empty brain', ->
     it 'should unsubscribe the room from the given repo', () ->
       # given
-      context.robot.brain.data['stash-poll'] =
-        'http://mocha.com/':
-          api_url: 'http://mocha.com/'
-          rooms: ['#mocha', '#abc']
+      helpers.brainFor(context.robot)
+        .repo('http://mocha.com/', ['#mocha', '#abc'])
 
       # then
       whenRemoving 'http://mocha.com/', ({referencedRepo, envelope, strings}) ->
