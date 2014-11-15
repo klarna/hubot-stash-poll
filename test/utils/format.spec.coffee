@@ -7,119 +7,6 @@ format = require('../../src/utils/format')
 
 describe 'utils | format', ->
   # =========================================================================
-  #  .listRepos()
-  # =========================================================================
-  describe '.listRepos()', ->
-    it 'should list zero repos', ->
-      # given
-      room = '#mocha'
-      repos = []
-
-      expected =
-        """
-        #mocha is not subscribing to any PR changes
-        """
-
-      # then
-      expect(format.listRepos repos, room).to.eql expected
-
-
-    it 'should list a single repo', ->
-      # given
-      room = '#mocha'
-      repos = [
-        api_url: 'http://r1.com/'
-      ]
-
-      expected =
-        """
-        #mocha is subscribing to PR changes from 1 repo(s):
-          - http://r1.com/
-        """
-
-      # then
-      expect(format.listRepos repos, room).to.eql expected
-
-
-    it 'should list a multiple repos', ->
-      # given
-      room = '#mocha'
-      repos = [
-        api_url: 'http://r1.com/'
-      ,
-        api_url: 'http://r2.com/'
-      ]
-
-      expected =
-        """
-        #mocha is subscribing to PR changes from 2 repo(s):
-          - http://r1.com/
-          - http://r2.com/
-        """
-
-      # then
-      expect(format.listRepos repos, room).to.eql expected
-
-
-    it 'should use friendly repo names if possible', ->
-      # given
-      room = '#mocha'
-      repos = [
-        api_url: 'http://test_repo1.com/rest/api/1.0/projects/proj1/repos/repo1/pull-requests'
-        repo_name: 'proj1/repo1'
-      ,
-        api_url: 'http://r2.com/'
-      ]
-
-      expected =
-        """
-        #mocha is subscribing to PR changes from 2 repo(s):
-          - proj1/repo1
-          - http://r2.com/
-        """
-
-      # then
-      expect(format.listRepos repos, room).to.eql expected
-
-
-    it 'should list all open pull requests inside repos', ->
-      # given
-      room = '#mocha'
-      repos = [
-        api_url: 'http://r1.com/'
-        pull_requests:
-          '8':
-            id: '8'
-            title: 'Bar request'
-            url: 'http://r1.com/pr/8'
-            state: 'MERGED'
-          '123':
-            id: '123'
-            title: 'Foo request'
-            url: 'http://r1.com/pr/123'
-            state: 'OPEN'
-          '55':
-            id: '123'
-            title: 'Foo request'
-            url: 'http://r1.com/pr/123'
-            state: 'DECLINED'
-      ,
-        api_url: 'http://r2.com/'
-      ]
-
-      expected =
-        """
-        #mocha is subscribing to PR changes from 2 repo(s):
-          - http://r1.com/
-            - #123 (Foo request): http://r1.com/pr/123
-          - http://r2.com/
-        """
-
-      # then
-      expect(format.listRepos repos, room).to.equal expected
-
-
-  # =========================================================================
   #  .pr
   # =========================================================================
   describe '.pr', ->
@@ -179,9 +66,12 @@ describe 'utils | format', ->
 
 
   # =========================================================================
-  #  .repo.nameFromUrl()
+  #  .repo
   # =========================================================================
   describe '.repo', ->
+    # =========================================================================
+    #  .nameFromUrl()
+    # =========================================================================
     describe '.nameFromUrl()', ->
       it 'should return a name for a matching URL', ->
         # given
@@ -204,3 +94,117 @@ describe 'utils | format', ->
         # then
         for url in api_urls
           expect(format.repo.nameFromUrl url).to.eql undefined
+
+
+    # =========================================================================
+    #  .list()
+    # =========================================================================
+    describe '.list()', ->
+      it 'should list zero repos', ->
+        # given
+        room = '#mocha'
+        repos = []
+
+        expected =
+          """
+          #mocha is not subscribing to any PR changes
+          """
+
+        # then
+        expect(format.repo.list repos, room).to.eql expected
+
+
+      it 'should list a single repo', ->
+        # given
+        room = '#mocha'
+        repos = [
+          api_url: 'http://r1.com/'
+        ]
+
+        expected =
+          """
+          #mocha is subscribing to PR changes from 1 repo(s):
+            - http://r1.com/
+          """
+
+        # then
+        expect(format.repo.list repos, room).to.eql expected
+
+
+      it 'should list a multiple repos', ->
+        # given
+        room = '#mocha'
+        repos = [
+          api_url: 'http://r1.com/'
+        ,
+          api_url: 'http://r2.com/'
+        ]
+
+        expected =
+          """
+          #mocha is subscribing to PR changes from 2 repo(s):
+            - http://r1.com/
+            - http://r2.com/
+          """
+
+        # then
+        expect(format.repo.list repos, room).to.eql expected
+
+
+      it 'should use friendly repo names if possible', ->
+        # given
+        room = '#mocha'
+        repos = [
+          api_url: 'http://test_repo1.com/rest/api/1.0/projects/proj1/repos/repo1/pull-requests'
+          repo_name: 'proj1/repo1'
+        ,
+          api_url: 'http://r2.com/'
+        ]
+
+        expected =
+          """
+          #mocha is subscribing to PR changes from 2 repo(s):
+            - proj1/repo1
+            - http://r2.com/
+          """
+
+        # then
+        expect(format.repo.list repos, room).to.eql expected
+
+
+      it 'should list all open pull requests inside repos', ->
+        # given
+        room = '#mocha'
+        repos = [
+          api_url: 'http://r1.com/'
+          pull_requests:
+            '8':
+              id: '8'
+              title: 'Bar request'
+              url: 'http://r1.com/pr/8'
+              state: 'MERGED'
+            '123':
+              id: '123'
+              title: 'Foo request'
+              url: 'http://r1.com/pr/123'
+              state: 'OPEN'
+            '55':
+              id: '123'
+              title: 'Foo request'
+              url: 'http://r1.com/pr/123'
+              state: 'DECLINED'
+        ,
+          api_url: 'http://r2.com/'
+        ]
+
+        expected =
+          """
+          #mocha is subscribing to PR changes from 2 repo(s):
+            - http://r1.com/
+              - #123 (Foo request): http://r1.com/pr/123
+            - http://r2.com/
+          """
+
+        # then
+        expect(format.repo.list repos, room).to.equal expected
+

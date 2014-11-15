@@ -3,32 +3,7 @@ repoNameRe = new RegExp 'projects/([^/]+)/repos/([^/]+)'
 
 module.exports =
   # =========================================================================
-  #  LIST
-  # =========================================================================
-  listRepos: (repos, inRoom) ->
-    if not repos? or repos.length is 0
-      "#{inRoom} is not subscribing to any PR changes"
-    else
-      repo = repos[0]
-      lines = [
-        "#{inRoom} is subscribing to PR changes from #{repos.length} repo(s):"
-      ]
-
-      for repo in repos
-        name = module.exports.repo.nameFromUrl(repo.api_url) or repo.api_url
-        lines.push "  - #{name}"
-
-        if repo.pull_requests?
-          for id, pr of repo.pull_requests when pr.state is 'OPEN'
-            pr = repo.pull_requests[id]
-            formatted = "##{id} (#{pr.title}): #{pr.url}"
-            lines.push "    - #{formatted}"
-
-      lines.join '\n'
-
-
-  # =========================================================================
-  #  PULL REQUEST NOTIFICATIONS
+  #  REPOSITORY/IES
   # =========================================================================
   repo:
     nameFromUrl: (api_url) ->
@@ -39,6 +14,27 @@ module.exports =
       else
         undefined
 
+
+    list: (repos, inRoom) ->
+      if not repos? or repos.length is 0
+        "#{inRoom} is not subscribing to any PR changes"
+      else
+        repo = repos[0]
+        lines = [
+          "#{inRoom} is subscribing to PR changes from #{repos.length} repo(s):"
+        ]
+
+        for repo in repos
+          name = module.exports.repo.nameFromUrl(repo.api_url) or repo.api_url
+          lines.push "  - #{name}"
+
+          if repo.pull_requests?
+            for id, pr of repo.pull_requests when pr.state is 'OPEN'
+              pr = repo.pull_requests[id]
+              formatted = "##{id} (#{pr.title}): #{pr.url}"
+              lines.push "    - #{formatted}"
+
+        lines.join '\n'
 
 
   # =========================================================================
