@@ -83,8 +83,8 @@ bot = (robot) ->
   # =========================================================================
   #  POLLING
   # =========================================================================
-  sendRoomMessages = (prData, message) ->
-    repo = robot.brain.data['stash-poll']?[prData.api_url]
+  sendRoomMessages = (forApiUrl, message) ->
+    repo = robot.brain.data['stash-poll']?[forApiUrl]
     return if not repo? or not repo.rooms?
 
     for room in repo.rooms
@@ -92,15 +92,19 @@ bot = (robot) ->
 
 
   utils.poller.events.on 'pr:open', (prData) ->
-    sendRoomMessages prData, format.pr.opened(prData)
+    sendRoomMessages prData.api_url, format.pr.opened(prData)
 
 
   utils.poller.events.on 'pr:merge', (prData) ->
-    sendRoomMessages prData, format.pr.merged(prData)
+    sendRoomMessages prData.api_url, format.pr.merged(prData)
 
 
   utils.poller.events.on 'pr:decline', (prData) ->
-    sendRoomMessages prData, format.pr.declined(prData)
+    sendRoomMessages prData.api_url, format.pr.declined(prData)
+
+
+  utils.poller.events.on 'repo:failed', (repo) ->
+    sendRoomMessages repo.api_url, format.repo.failed(repo)
 
 
   utils.poller.start()
