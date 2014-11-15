@@ -209,6 +209,24 @@ describe 'utils | format', ->
         expect(format.repo.list repos, room).to.equal expected
 
 
+      it 'should include failCount', ->
+        # given
+        room = '#mocha'
+        repos = [
+          api_url: 'http://r1.com/'
+          failCount: 99
+        ]
+
+        expected =
+          """
+          #mocha is subscribing to PR changes from 1 repo(s):
+            - http://r1.com/ (NOTE: 99 consecutive fetch fails)
+          """
+
+        # then
+        expect(format.repo.list repos, room).to.eql expected
+
+
     # =========================================================================
     #  .failed()
     # =========================================================================
