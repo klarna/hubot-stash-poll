@@ -29,8 +29,8 @@ describe 'utils | poller', ->
 
       context.poller = new Poller(robot: context.robot)
 
-      context.fetch = ->
-        context.nocks = helpers.nocksFor context.robot
+      context.fetch = (httpStatus = 200) ->
+        context.nocks = helpers.nocksFor context.robot, httpStatus
         context.poller.fetchRepositories()
 
       done()
@@ -219,6 +219,114 @@ describe 'utils | poller', ->
 
       # when
       context.fetch()
+
+
+
+  # =========================================================================
+  #  .fetchRepository()
+  # =========================================================================
+  describe '.fetchRepository()', ->
+    it 'should reject the promise when fetch fails', ->
+      # given
+      repo = helpers.brainFor(context.robot)
+        .repo('http://fail.whale')
+        .repo()
+
+      helpers.nocksFor context.robot, 404
+
+      # when
+      promise = context.poller.fetchRepository(repo)
+
+      # then
+      promise.fail ->
+
+
+    it 'should reject the promise when response is invalid', ->
+      # given
+      repo = helpers.brainFor(context.robot)
+        .repo('http://invalid.org')
+
+      helpers.nocksFor context.robot, 200
+
+      # when
+      promise = context.poller.fetchRepository(repo)
+
+      # then
+      promise.fail ->
+
+
+    it 'should update failCount when fetch fails', ->
+      # given
+      repo = helpers.brainFor(context.robot)
+        .repo('http://fail.whale')
+        .repo()
+
+      repo.failCount = 0
+      helpers.nocksFor context.robot, 404
+
+      # when
+      promise = context.poller.fetchRepository(repo)
+
+      # then
+      promise.fail ->
+        expect(repo.failCount).to.equal 1
+
+
+    it 'should emit an event when failcount reaches 3 fails', ->
+      # given
+      repo = helpers.brainFor(context.robot)
+        .repo('http://fail.whale')
+        .repo()
+
+      helpers.nocksFor context.robot, 404
+      repo.failCount = 2
+      spy = context.sandbox.spy()
+      onEmit 'repo:failed', spy
+
+      # when
+      promise = context.poller.fetchRepository(repo)
+
+      # then
+      promise.fail ->
+        expect(repo.failCount).to.equal 3
+        expect(repo).to.eql spy.firstCall.args[0]
+
+
+    it 'should not emit an event when failcount exceeds 3 fails', ->
+      # given
+      repo = helpers.brainFor(context.robot)
+        .repo('http://fail.whale')
+        .repo()
+
+      helpers.nocksFor context.robot, 404
+      repo.failCount = 3
+      spy = context.sandbox.spy()
+      onEmit 'repo:failed', spy
+
+      # when
+      promise = context.poller.fetchRepository(repo)
+
+      # then
+      promise.fail ->
+        expect(repo.failCount).to.equal 4
+        expect(spy.called).to.equal false
+
+
+    it 'should reset failcount on a successful fetch', ->
+      # given
+      repo = helpers.brainFor(context.robot)
+        .repo('http://a.com/rest/api/1.0/projects/proj1/repos/repo1/pull-requests')
+        .repo()
+
+      helpers.nocksFor context.robot
+      repo.failCount = 3
+
+      # when
+      promise = context.poller.fetchRepository(repo)
+
+      # then
+      promise.then ->
+        expect(repo.failCount).to.equal 0
 
 
   # =========================================================================

@@ -47,21 +47,40 @@ class Poller
 
 
   fetchRepository: (repo) ->
-    deffered = Q.defer()
+    deferred = Q.defer()
+
+    fail = (e) =>
+      @_handleRepoFailed(repo)
+      deferred.reject(e)
+
     try
       fetchUrl = @_buildFetchUrl repo.api_url
 
       @robot.http(fetchUrl).auth(config.username, config.password).get() (err, res, body) =>
         if err?
-          @robot.logger.error "HTTP GET failed for #{fetchUrl} - #{err}"
-          deffered.reject(err)
+          fail(err)
         else
-          @_handleResponse repo, body
-          deffered.resolve(repo)
-    catch e
-      deffered.reject(e)
+          json = JSON.parse body
+          pullRequests = json?.values
 
-    deffered.promise
+          if pullRequests?
+            @_upsertPullrequests pullRequests, repo
+            repo.failCount = 0
+            deferred.resolve(repo)
+          else
+            fail(new Error "Invalid JSON format, expected { values: [] }")
+    catch e
+      fail(e)
+
+    deferred.promise
+
+
+  _handleRepoFailed: (repo) ->
+    repo.failCount = 0 unless repo.failCount?
+    repo.failCount += 1
+
+    if repo.failCount is 3
+      @events.emit 'repo:failed', repo
 
 
   _buildFetchUrl: (repoApiUrl) ->
@@ -72,14 +91,7 @@ class Poller
       repoApiUrl + "?state=ALL"
 
 
-  _handleResponse: (forRepo, body) ->
-    parsed = try
-      JSON.parse body
-    catch err
-      @robot.logger.error "JSON parse failed for body - #{err}"
-      null
-
-    pullRequests = parsed?.values
+  _upsertPullrequests: (pullRequests, forRepo) ->
     return if not pullRequests or pullRequests.length is 0
 
     for pr in pullRequests
