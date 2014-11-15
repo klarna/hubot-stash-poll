@@ -179,27 +179,28 @@ describe 'utils | format', ->
 
 
   # =========================================================================
-  #  .repoFriendlyNameFromUrl()
+  #  .repo.nameFromUrl()
   # =========================================================================
-  describe '.repoFriendlyNameFromUrl', ->
-    it 'should return a name for a matching URL', ->
-      # given
-      api_url = 'http://test_repo1.com/rest/api/1.0/projects/foo-inc/repos/bar.git/pull-requests'
+  describe '.repo', ->
+    describe '.nameFromUrl()', ->
+      it 'should return a name for a matching URL', ->
+        # given
+        api_url = 'http://test_repo1.com/rest/api/1.0/projects/foo-inc/repos/bar.git/pull-requests'
 
-      # then
-      expect(format.repoFriendlyNameFromUrl api_url).to.eql 'foo-inc/bar.git'
+        # then
+        expect(format.repo.nameFromUrl api_url).to.eql 'foo-inc/bar.git'
 
 
-    it 'should return undefined for a non-matching URL', ->
-      # given
-      api_urls = [
-        'http://mocha.com/'
-        'http://asdf.com/api/projects/asdf/'
-        'http://asdf.com/api/projects/asdf/repos/'
-        ''
-        undefined
-      ]
+      it 'should return undefined for a non-matching URL', ->
+        # given
+        api_urls = [
+          'http://mocha.com/'
+          'http://asdf.com/api/projects/asdf/'
+          'http://asdf.com/api/projects/asdf/repos/'
+          ''
+          undefined
+        ]
 
-      # then
-      for url in api_urls
-        expect(format.repoFriendlyNameFromUrl url).to.eql undefined
+        # then
+        for url in api_urls
+          expect(format.repo.nameFromUrl url).to.eql undefined

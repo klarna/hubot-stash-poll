@@ -54,7 +54,7 @@ bot = (robot) ->
         return
 
       if utils.broker.tryRegisterRepo apiUrl, room
-        name = format.repoFriendlyNameFromUrl(apiUrl) or apiUrl
+        name = format.repo.nameFromUrl(apiUrl) or apiUrl
         msg.reply "#{room} is now subscribing to PR changes from #{name}"
       else
         msg.reply "Something went wrong! Could not add subscription for #{apiUrl} in room #{room}"

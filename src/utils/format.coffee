@@ -15,7 +15,7 @@ module.exports =
       ]
 
       for repo in repos
-        name = module.exports.repoFriendlyNameFromUrl(repo.api_url) or repo.api_url
+        name = module.exports.repo.nameFromUrl(repo.api_url) or repo.api_url
         lines.push "  - #{name}"
 
         if repo.pull_requests?
@@ -28,15 +28,17 @@ module.exports =
 
 
   # =========================================================================
-  #  REPO NAME
+  #  PULL REQUEST NOTIFICATIONS
   # =========================================================================
-  repoFriendlyNameFromUrl: (api_url) ->
-    matches = api_url?.match repoNameRe
+  repo:
+    nameFromUrl: (api_url) ->
+      matches = api_url?.match repoNameRe
 
-    if matches? and matches[1]? and matches[2]?
-      "#{matches[1]}/#{matches[2]}"
-    else
-      undefined
+      if matches? and matches[1]? and matches[2]?
+        "#{matches[1]}/#{matches[2]}"
+      else
+        undefined
+
 
 
   # =========================================================================
