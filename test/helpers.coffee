@@ -64,11 +64,19 @@ module.exports =
     api
 
 
-  nocksFor: (robot) ->
+  nocksFor: (robot, httpStatus = 200) ->
+    cb = switch httpStatus
+      when 200
+        (u) -> fs.createReadStream(path.resolve "test/fixture/#{u.hostname}_pull-requests.json")
+      else
+        -> {}
+
     for api_url, repo of robot.brain.data['stash-poll']
-      u = url.parse repo.api_url
-      do (u) -> nock("#{u.protocol}//#{u.host}").get("#{u.path}?state=ALL").reply 200, ->
-        fs.createReadStream(path.resolve "test/fixture/#{u.hostname}_pull-requests.json")
+      do (repo) ->
+        u = url.parse repo.api_url
+        nock("#{u.protocol}//#{u.host}")
+          .get("#{u.path}?state=ALL")
+          .reply(httpStatus, cb u)
 
 
   asEmittedPR: (pull_request) ->

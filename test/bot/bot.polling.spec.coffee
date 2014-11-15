@@ -92,3 +92,21 @@ describe 'bot | polling', ->
 
     # when
     context.poller.events.emit 'pr:decline', emitted
+
+
+  it 'should send a group message on failed repo', (done) ->
+    # given
+    repo = helpers.brainFor(context.robot)
+      .repo('http://fail.whale', ['#mocha'])
+      .repo()
+
+    repo.failCount = 5
+
+    context.robot.adapter.on 'send', (envelope, strings) ->
+      helpers.asyncAssert done, ->
+        # then
+        expect(envelope.room).to.equal '#mocha'
+        expect(strings[0]).to.equal format.repo.failed(repo)
+
+    # when
+    context.poller.events.emit 'repo:failed', repo

@@ -39,25 +39,48 @@ class Poller
       return
 
     @events.emit 'poll:begin'
-    promises = []
-
-    for api_url, repo of @robot.brain.data['stash-poll']
-      fetchUrl = @_buildFetchUrl api_url
-
-      do (fetchUrl, repo) =>
-        deffered = Q.defer()
-        promises.push deffered.promise
-
-        @robot.http(fetchUrl).auth(config.username, config.password).get() (err, res, body) =>
-          if err?
-            @robot.logger.error "HTTP GET failed for #{fetchUrl} - #{err}"
-            deffered.reject(err)
-          else
-            @_handleResponse repo, body
-            deffered.resolve()
+    promises = for api_url, repo of @robot.brain.data['stash-poll']
+      @fetchRepository repo
 
     Q.allSettled(promises).then (results) =>
       @events.emit 'poll:end'
+
+
+  fetchRepository: (repo) ->
+    deferred = Q.defer()
+
+    fail = (e) =>
+      @_handleRepoFailed(repo)
+      deferred.reject(e)
+
+    try
+      fetchUrl = @_buildFetchUrl repo.api_url
+
+      @robot.http(fetchUrl).auth(config.username, config.password).get() (err, res, body) =>
+        if err?
+          fail(err)
+        else
+          json = JSON.parse body
+          pullRequests = json?.values
+
+          if pullRequests?
+            @_upsertPullrequests pullRequests, repo
+            repo.failCount = 0
+            deferred.resolve(repo)
+          else
+            fail(new Error "Invalid JSON format, expected { values: [] }")
+    catch e
+      fail(e)
+
+    deferred.promise
+
+
+  _handleRepoFailed: (repo) ->
+    repo.failCount = 0 unless repo.failCount?
+    repo.failCount += 1
+
+    if repo.failCount is 3
+      @events.emit 'repo:failed', repo
 
 
   _buildFetchUrl: (repoApiUrl) ->
@@ -68,14 +91,7 @@ class Poller
       repoApiUrl + "?state=ALL"
 
 
-  _handleResponse: (forRepo, body) ->
-    parsed = try
-      JSON.parse body
-    catch err
-      @robot.logger.error "JSON parse failed for body - #{err}"
-      null
-
-    pullRequests = parsed?.values
+  _upsertPullrequests: (pullRequests, forRepo) ->
     return if not pullRequests or pullRequests.length is 0
 
     for pr in pullRequests
@@ -100,11 +116,13 @@ class Poller
 
       # update/insert PR state
       forRepo.pull_requests ||= {}
-      forRepo.pull_requests[pr.id] ||= {}
 
-      forRepo.pull_requests[pr.id].id = pr.id
-      forRepo.pull_requests[pr.id].title = pr.title
-      forRepo.pull_requests[pr.id].url = pr_url
+      if not forRepo.pull_requests[pr.id]?
+        forRepo.pull_requests[pr.id] =
+          id: pr.id
+          title: pr.title
+          url: pr_url
+
       forRepo.pull_requests[pr.id].state = pr.state
 
       @events.emit eventName, format.pr.toEmitFormat
