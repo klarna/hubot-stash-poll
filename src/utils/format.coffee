@@ -37,6 +37,11 @@ module.exports =
         lines.join '\n'
 
 
+    failed: (repo) ->
+      expected = "NOTE: there has been #{repo.failCount} consecutive fails of fetching #{repo.api_url}"
+
+
+
   # =========================================================================
   #  PULL REQUEST NOTIFICATIONS
   # =========================================================================

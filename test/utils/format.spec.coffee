@@ -208,3 +208,18 @@ describe 'utils | format', ->
         # then
         expect(format.repo.list repos, room).to.equal expected
 
+
+    # =========================================================================
+    #  .failed()
+    # =========================================================================
+    describe '.failed()', ->
+      it 'should include the failCount', ->
+        # given
+        repo =
+          api_url: 'http://test_repo1.com/rest/api/1.0/projects/foo-inc/repos/bar.git/pull-requests'
+          failCount: 3
+
+        expected = "NOTE: there has been 3 consecutive fails of fetching #{repo.api_url}"
+
+        # then
+        expect(format.repo.failed repo).to.equal expected
