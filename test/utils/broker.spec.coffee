@@ -32,12 +32,21 @@ describe 'utils | broker', ->
   describe '.tryRegisterRepo()', ->
     describe 'given an empty brain', ->
       it 'should save a new repo subscription to the brain', ->
+        # given
+        api_url = 'http://a.com/rest/api/1.0/projects/proj1/repos/repo1/pull-requests'
+        mock = { brain: data: {} }
+        helpers.brainFor(mock)
+          .repo(api_url)
+
+        helpers.nocksFor(mock)
+
         # when
-        context.broker.tryRegisterRepo 'http://foo.com/', '#room'
+        promise = context.broker.tryRegisterRepo api_url, '#room'
 
         # then
-        expect(context.robot.brain.data['stash-poll']['http://foo.com/'].api_url).to.eql 'http://foo.com/'
-        expect(context.robot.brain.data['stash-poll']['http://foo.com/'].rooms).to.eql ['#room']
+        promise.then ->
+          expect(context.robot.brain.data['stash-poll'][api_url].api_url).to.eql api_url
+          expect(context.robot.brain.data['stash-poll'][api_url].rooms).to.eql ['#room']
 
 
     describe 'given a non-empty brain', ->
@@ -52,18 +61,20 @@ describe 'utils | broker', ->
 
       it 'should push the room to a repo if it doesn\'t already exist', ->
         # when
-        context.broker.tryRegisterRepo 'http://abc.com/', '#mocha'
+        promise = context.broker.tryRegisterRepo 'http://abc.com/', '#mocha'
 
         # then
-        expect(brain['http://abc.com/'].rooms).to.eql ['#abc','#mocha']
+        promise.then ->
+          expect(brain['http://abc.com/'].rooms).to.eql ['#abc','#mocha']
 
 
       it 'should not push the room to a repo if it already exists', ->
         # when
-        context.broker.tryRegisterRepo 'http://abc.com/', '#mocha'
+        promise = context.broker.tryRegisterRepo 'http://abc.com/', '#mocha'
 
         # then
-        expect(brain['http://mocha.com/'].rooms).to.eql ['#mocha']
+        promise.then ->
+          expect(brain['http://mocha.com/'].rooms).to.eql ['#mocha']
 
 
   # =========================================================================
