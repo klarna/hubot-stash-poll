@@ -17,11 +17,6 @@ describe 'utils | poller', ->
     # event listeners
     context.listeners = []
 
-    # mock the Stash requests
-    nock.activate() if not nock.isActive()
-    nock.disableNetConnect()
-    nock.enableNetConnect('localhost')
-
     testContext (testContext) ->
       context.robot = testContext.robot
       context.sandbox = testContext.sandbox
@@ -58,15 +53,16 @@ describe 'utils | poller', ->
     it 'should create a HTTP request for each repo', ->
       # given
       helpers.brainFor(context.robot)
-        .repo('http://a.com')
-        .repo('http://b.com')
+        .repo('http://a.com/rest/api/1.0/projects/proj1/repos/repo1/pull-requests')
+        .repo('http://b.com/rest/api/1.0/projects/proj2/repos/repo2/pull-requests')
 
       # when
-      context.fetch()
+      promise = context.fetch()
 
       # then
-      for n in context.nocks
-        expect(n.isDone()).to.equal true
+      promise.then ->
+        for n in context.nocks
+          expect(n.isDone()).to.equal true
 
 
     it 'should emit an event for an unseen PR that is open', (done) ->

@@ -1,4 +1,5 @@
 fs = require('fs')
+nock = require('nock')
 path = require('path')
 sinon = require('sinon')
 Robot = require('hubot/src/robot')
@@ -13,6 +14,12 @@ module.exports = (done) ->
 
   # to avoid "possible EventEmitter memory leak detected" warning
   context.sandbox.stub process, 'on', -> null
+
+
+  # stop all requests by default
+  nock.activate() if not nock.isActive()
+  nock.disableNetConnect()
+  nock.enableNetConnect('localhost')
 
   context.robot = new Robot(null, 'mock-adapter', false, 'MOCKBOT')
 
