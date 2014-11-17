@@ -15,7 +15,6 @@ module.exports = (done) ->
   # to avoid "possible EventEmitter memory leak detected" warning
   context.sandbox.stub process, 'on', -> null
 
-
   # stop all requests by default
   nock.activate() if not nock.isActive()
   nock.disableNetConnect()
