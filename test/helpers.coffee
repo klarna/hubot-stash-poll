@@ -74,9 +74,14 @@ module.exports =
     for api_url, repo of robot.brain.data['stash-poll']
       do (repo) ->
         u = url.parse repo.api_url
-        nock("#{u.protocol}//#{u.host}")
+        module.exports.nockUrl(u)
           .get("#{u.path}?state=ALL")
           .reply(httpStatus, cb u)
+
+
+  nockUrl: (u) ->
+    u = url.parse u if typeof u is 'string'
+    nock("#{u.protocol}//#{u.host}")
 
 
   asEmittedPR: (pull_request) ->

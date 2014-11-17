@@ -53,11 +53,12 @@ bot = (robot) ->
         msg.reply "Sorry, #{msg.match?[1]} doesn't look like a valid URI to me"
         return
 
-      if utils.broker.tryRegisterRepo apiUrl, room
-        name = format.repo.nameFromUrl(apiUrl) or apiUrl
-        msg.reply "#{room} is now subscribing to PR changes from #{name}"
-      else
-        msg.reply "Something went wrong! Could not add subscription for #{apiUrl} in room #{room}"
+      utils.broker.tryRegisterRepo(apiUrl, room)
+        .then ->
+          name = format.repo.nameFromUrl(apiUrl) or apiUrl
+          msg.reply "#{room} is now subscribing to PR changes from #{name}"
+        .fail ->
+          msg.reply "#{apiUrl} does not appear to be a valid repo (or, I lack access)"
     catch e
       msg.reply "An exception occurred! Could not add subscription for #{apiUrl} in room #{room}. Message: #{e.message}"
 

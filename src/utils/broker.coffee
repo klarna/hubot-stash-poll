@@ -1,4 +1,6 @@
+Q = require 'q'
 url = require 'url'
+Poller = require './poller'
 
 
 ###
@@ -10,22 +12,31 @@ class Broker
 
   tryRegisterRepo: (apiUrl, room) ->
     apiUrl = @getNormalizedApiUrl apiUrl
+    deferred = Q.defer()
+
     if not apiUrl?
-      return false
-
-    @_ensureBrain()
-    repo = @robot.brain.data['stash-poll'][apiUrl]
-
-    if repo?
-      repo.rooms ?= []
-      repo.rooms.push(room) if room not in repo.rooms
+      deferred.reject()
     else
-      repo =
-        api_url: apiUrl
-        rooms: [room]
+      @_ensureBrain()
+      repo = @robot.brain.data['stash-poll'][apiUrl]
 
-    @robot.brain.data['stash-poll'][apiUrl] = repo
-    return true
+      if repo?
+        repo.rooms ?= []
+        repo.rooms.push(room) if room not in repo.rooms
+        deferred.resolve(repo)
+      else
+        repo =
+          api_url: apiUrl
+          rooms: [room]
+
+        (new Poller robot: @robot).fetchRepository(repo)
+          .then =>
+            @robot.brain.data['stash-poll'][apiUrl] = repo
+            deferred.resolve(repo)
+          .fail (e) ->
+            deferred.reject(e)
+
+    deferred.promise
 
 
   tryUnregisterRepo: (apiUrl, room) ->
