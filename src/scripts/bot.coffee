@@ -19,6 +19,12 @@ Poller = require '../utils/poller'
 config = require '../config/config'
 format = require '../utils/format'
 
+commands =
+  rm: require '../commands/rm'
+  add: require '../commands/add'
+  list: require '../commands/list'
+
+
 # will be instantiated when bot is activated
 utils =
   poller: undefined
@@ -34,50 +40,37 @@ bot = (robot) ->
   #  RESPONSES
   # =========================================================================
   robot.respond /stash-poll$/i, (msg) ->
-    room = msg.message.user.room
-
-    try
-      repos = utils.broker.getSubscribedReposFor room
-      msg.reply format.repo.list repos, room
-    catch e
-      msg.reply "An exception occurred! Could not list subscriptions for room #{room}. Message: #{e.message}"
-
+    commands.list
+      msg: msg
+      broker: utils.broker
 
 
   robot.respond /stash-poll add (.*)/i, (msg) ->
-    room = msg.message.user.room
-
-    try
-      apiUrl = utils.broker.getNormalizedApiUrl msg.match?[1]
-      if not apiUrl?
-        msg.reply "Sorry, #{msg.match?[1]} doesn't look like a valid URI to me"
-        return
-
-      utils.broker.tryRegisterRepo(apiUrl, room)
-        .then ->
-          name = format.repo.nameFromUrl(apiUrl) or apiUrl
-          msg.reply "#{room} is now subscribing to PR changes from #{name}"
-        .fail ->
-          msg.reply "#{apiUrl} does not appear to be a valid repo (or, I lack access)"
-    catch e
-      msg.reply "An exception occurred! Could not add subscription for #{apiUrl} in room #{room}. Message: #{e.message}"
+    commands.add
+      msg: msg
+      broker: utils.broker
 
 
   robot.respond /stash-poll rm (.*)/i, (msg) ->
+    commands.rm
+      msg: msg
+      broker: utils.broker
+
+  robot.respond /stash-poll ping ([^\s]+) (.*)/i, (msg) ->
     room = msg.message.user.room
 
-    try
-      apiUrl = utils.broker.getNormalizedApiUrl msg.match?[1]
-      if not apiUrl?
-        msg.reply "Sorry, #{msg.match?[1]} doesn't look like a valid URI to me"
-        return
+    # try
+    #   apiUrl = utils.broker.getNormalizedApiUrl msg.match?[1]
+    #   if not apiUrl?
+    #     msg.reply "Sorry, #{msg.match?[1]} doesn't look like a valid URI to me"
+    #     return
 
-      if utils.broker.tryUnregisterRepo apiUrl, room
-        msg.reply "#{room} is no longer subscribing to PR changes in repo #{apiUrl}"
-      else
-        msg.reply "Something went wrong! Could not unsubscibe from #{apiUrl} in room #{room}"
-    catch e
-      msg.reply "An exception occurred! Could not unsubscibe from #{apiUrl} in room #{room}. Message: #{e.message}"
+    #   if utils.broker.tryUnregisterRepo apiUrl, room
+    #     msg.reply "#{room} is no longer subscribing to PR changes in repo #{apiUrl}"
+    #   else
+    #     msg.reply "Something went wrong! Could not unsubscibe from #{apiUrl} in room #{room}"
+    # catch e
+    #   msg.reply "An exception occurred! Could not unsubscibe from #{apiUrl} in room #{room}. Message: #{e.message}"
 
 
 
