@@ -14,7 +14,9 @@ module.exports = ({broker, msg}) ->
       .then ->
         name = format.repo.nameFromUrl(apiUrl) or apiUrl
         msg.reply "#{room} is now subscribing to PR changes from #{name}"
-      .fail ->
+      .fail (e) ->
         msg.reply "#{apiUrl} does not appear to be a valid repo (or, I lack access)"
+        if e
+          msg.reply e.toString()
   catch e
     msg.reply "An exception occurred! Could not add subscription for #{apiUrl} in room #{room}. Message: #{e.message}"
