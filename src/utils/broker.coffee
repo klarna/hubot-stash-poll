@@ -18,7 +18,7 @@ class Broker
       deferred.reject()
     else
       @_ensureBrain()
-      repo = @robot.brain.data['stash-poll'][apiUrl]
+      repo = @getRepo apiUrl
 
       if repo?
         repo.rooms ?= []
@@ -28,6 +28,7 @@ class Broker
         repo =
           api_url: apiUrl
           rooms: [room]
+          pings: []
 
         (new Poller robot: @robot).fetchRepository(repo)
           .then =>
@@ -70,6 +71,10 @@ class Broker
         repos.push repo
 
     repos
+
+
+  getRepo: (api_url) ->
+    @robot.brain.data['stash-poll']?[api_url]
 
 
   _ensureBrain: ->

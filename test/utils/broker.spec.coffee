@@ -111,9 +111,11 @@ describe 'utils | broker', ->
       expect(repos).to.eql [
         api_url: 'http://abc.com/'
         rooms: ['#mocha']
+        pings: []
       ,
         api_url: 'http://123.com/'
         rooms: ['#mocha']
+        pings: []
       ]
 
 
@@ -129,4 +131,5 @@ describe 'utils | broker', ->
       expect(repos).to.eql [
         api_url: 'http://123.com/'
         rooms: ['#mocha']
+        pings: []
       ]

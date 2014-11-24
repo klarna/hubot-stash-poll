@@ -36,12 +36,13 @@ module.exports =
       pr: undefined
 
     api =
-      repo: (api_url, rooms) ->
+      repo: (api_url, rooms=[], pings=[]) ->
         return ctx.repo unless arguments.length > 0
 
         ctx.repo = ctx.brain[api_url] =
           api_url: api_url
-          rooms: rooms ? []
+          rooms: rooms
+          pings: pings
 
         api
 

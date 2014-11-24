@@ -24,6 +24,35 @@ describe 'helpers', ->
         'http://foo.bar':
           api_url: 'http://foo.bar'
           rooms: []
+          pings: []
+
+
+    it 'should set rooms', ->
+      # given
+      brain = helpers.brainFor(mockbot)
+        .repo('http://foo.bar', ['#test'])
+        .get()
+
+      # then
+      expect(brain).to.eql
+        'http://foo.bar':
+          api_url: 'http://foo.bar'
+          rooms: ['#test']
+          pings: []
+
+
+    it 'should set pings', ->
+      # given
+      brain = helpers.brainFor(mockbot)
+        .repo('http://foo.bar', ['#test'], ['@foobar'])
+        .get()
+
+      # then
+      expect(brain).to.eql
+        'http://foo.bar':
+          api_url: 'http://foo.bar'
+          rooms: ['#test']
+          pings: ['@foobar']
 
 
     it 'should set a pull request', ->
@@ -38,6 +67,7 @@ describe 'helpers', ->
         'http://foo.bar/rest/api/1.0/projects/p1/repos/r1/pull-requests':
           api_url: 'http://foo.bar/rest/api/1.0/projects/p1/repos/r1/pull-requests'
           rooms: ['#r00m']
+          pings: []
           pull_requests:
             '101':
               state: 'DECLINED'
@@ -61,9 +91,11 @@ describe 'helpers', ->
         'http://1.bar/pull-requests':
           api_url: 'http://1.bar/pull-requests'
           rooms: []
+          pings: []
         'http://2.bar/pull-requests':
           api_url: 'http://2.bar/pull-requests'
           rooms: ['#r2']
+          pings: []
           pull_requests:
             '201':
               state: 'OPEN'
@@ -76,6 +108,7 @@ describe 'helpers', ->
         'http://3.bar/pull-requests':
           api_url: 'http://3.bar/pull-requests'
           rooms: ['#r3']
+          pings: []
           pull_requests:
             '301':
               state: 'OPEN'
