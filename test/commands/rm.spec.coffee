@@ -9,7 +9,7 @@ testContext = require('../test_context')
 bot = require('../../src/scripts/bot')
 
 
-describe 'commands | pr | list', ->
+describe 'bot | commands | rm', ->
   context = {}
 
   beforeEach (done) ->
@@ -27,39 +27,30 @@ describe 'commands | pr | list', ->
   # =========================================================================
   #  INTERNAL TEST HELPERS
   # =========================================================================
-  whenListing = (expectCallback) ->
-    message = "stash-poll"
-    helpers.onRobotReply context.robot, context.user, message, expectCallback
+  whenRemoving = (api_url, expectCallback) ->
+    message = "stash-poll rm #{api_url}"
+    helpers.onRobotReply context.robot, context.user, message, (replyData) ->
+      replyData.referencedRepo = context.robot.brain.data['stash-poll']?[api_url]
+      expectCallback(replyData)
 
 
   # =========================================================================
   #  LISTENER
   # =========================================================================
   it 'should register a listener', ->
-    expect(context.robot.respond.withArgs(/stash-poll$/i).calledOnce).to.equal true
+    expect(context.robot.respond.withArgs(/stash-poll rm (.*)/i).calledOnce).to.equal true
 
 
   # =========================================================================
   #  NON-EMPTY BRAIN
   # =========================================================================
   describe 'given a non-empty brain', ->
-    it 'should list all repos that the room is subscribed to', ->
+    it 'should unsubscribe the room from the given repo', () ->
       # given
       helpers.brainFor(context.robot)
-        .repo('http://a.com', ['#mocha'])
-          .pr('1', 'MERGED')
-          .pr('2', 'OPEN')
-        .repo('http://b.com', ['#abc','#mocha'])
-          .pr('3', 'DECLINED')
-        .repo('http://c.com', ['#abc'])
+        .repo('http://mocha.com/', ['#mocha', '#abc'])
 
-      expected = """
-                 #mocha is subscribing to PR changes from 2 repo(s):
-                   - http://a.com
-                     - #2 (#2 @ http://a.com/2): http://a.com/2
-                   - http://b.com
-                 """
-
-      # when/then
-      whenListing ({strings, envelope}) ->
-        expect(strings[0]).to.equal expected
+      # then
+      whenRemoving 'http://mocha.com/', ({referencedRepo, envelope, strings}) ->
+        expect(referencedRepo.rooms).to.eql ['#abc']
+        expect(strings[0]).to.equal "#{envelope.room} is no longer subscribing to PR changes in repo http://mocha.com/"

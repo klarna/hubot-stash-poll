@@ -27,7 +27,7 @@ module.exports =
         for repo in repos
           name = module.exports.repo.nameFromUrl(repo.api_url) or repo.api_url
           repoLine = "  - #{name}"
-          if repo.failCount? > 0
+          if repo.failCount? and repo.failCount > 0
             repoLine += " (NOTE: #{repo.failCount} consecutive fetch fails)"
 
           lines.push repoLine

@@ -12,7 +12,7 @@ testContext = require('../test_context')
 bot = require('../../src/scripts/bot')
 
 
-describe 'commands | pr | subscribe', ->
+describe 'bot | commands | add', ->
   context = {}
 
   beforeEach (done) ->

@@ -9,6 +9,8 @@
 #   hubot stash-poll - Lists the subscriptions in the current room
 #   hubot stash-poll add <api url> - Subscribe current room to PR changes on the given API url, e.g. https://stashurl.com/rest/api/1.0/projects/MYPROJ/repos/MYREPO/pull-requests
 #   hubot stash-poll rm <api url> - Unsubscribe current room from PR changes on the given API url, e.g. https://stashurl.com/rest/api/1.0/projects/MYPROJ/repos/MYREPO/pull-requests
+#   hubot stash-poll ping <name> <api url> - Pings the given name on PR changes from the given API url
+#   hubot stash-poll unping <name> <api url> - Remove pings for the given name on PR changes from the given API url
 #
 # Authors:
 #   Christoffer Skeppstedt (chris.skeppstedt@klarna.com, http://github.com/cskeppstedt/)
@@ -18,6 +20,14 @@ Broker = require '../utils/broker'
 Poller = require '../utils/poller'
 config = require '../config/config'
 format = require '../utils/format'
+
+commands =
+  rm: require '../commands/rm'
+  add: require '../commands/add'
+  list: require '../commands/list'
+  ping: require '../commands/ping'
+  unping: require '../commands/unping'
+
 
 # will be instantiated when bot is activated
 utils =
@@ -34,50 +44,32 @@ bot = (robot) ->
   #  RESPONSES
   # =========================================================================
   robot.respond /stash-poll$/i, (msg) ->
-    room = msg.message.user.room
-
-    try
-      repos = utils.broker.getSubscribedReposFor room
-      msg.reply format.repo.list repos, room
-    catch e
-      msg.reply "An exception occurred! Could not list subscriptions for room #{room}. Message: #{e.message}"
-
+    commands.list
+      msg: msg
+      broker: utils.broker
 
 
   robot.respond /stash-poll add (.*)/i, (msg) ->
-    room = msg.message.user.room
-
-    try
-      apiUrl = utils.broker.getNormalizedApiUrl msg.match?[1]
-      if not apiUrl?
-        msg.reply "Sorry, #{msg.match?[1]} doesn't look like a valid URI to me"
-        return
-
-      utils.broker.tryRegisterRepo(apiUrl, room)
-        .then ->
-          name = format.repo.nameFromUrl(apiUrl) or apiUrl
-          msg.reply "#{room} is now subscribing to PR changes from #{name}"
-        .fail ->
-          msg.reply "#{apiUrl} does not appear to be a valid repo (or, I lack access)"
-    catch e
-      msg.reply "An exception occurred! Could not add subscription for #{apiUrl} in room #{room}. Message: #{e.message}"
+    commands.add
+      msg: msg
+      broker: utils.broker
 
 
   robot.respond /stash-poll rm (.*)/i, (msg) ->
-    room = msg.message.user.room
+    commands.rm
+      msg: msg
+      broker: utils.broker
 
-    try
-      apiUrl = utils.broker.getNormalizedApiUrl msg.match?[1]
-      if not apiUrl?
-        msg.reply "Sorry, #{msg.match?[1]} doesn't look like a valid URI to me"
-        return
+  robot.respond /stash-poll ping ([^\s]+) (.*)/i, (msg) ->
+    commands.ping
+      msg: msg
+      broker: utils.broker
 
-      if utils.broker.tryUnregisterRepo apiUrl, room
-        msg.reply "#{room} is no longer subscribing to PR changes in repo #{apiUrl}"
-      else
-        msg.reply "Something went wrong! Could not unsubscibe from #{apiUrl} in room #{room}"
-    catch e
-      msg.reply "An exception occurred! Could not unsubscibe from #{apiUrl} in room #{room}. Message: #{e.message}"
+
+  robot.respond /stash-poll unping ([^\s]+) (.*)/i, (msg) ->
+    commands.unping
+      msg: msg
+      broker: utils.broker
 
 
 

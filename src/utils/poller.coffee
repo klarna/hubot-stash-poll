@@ -60,7 +60,9 @@ class Poller
         if err?
           fail(err)
         else
-          json = JSON.parse body
+          json = try
+            JSON.parse body
+
           pullRequests = json?.values
 
           if pullRequests?
