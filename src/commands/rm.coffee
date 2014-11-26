@@ -1,18 +1,46 @@
 format = require '../utils/format'
 
 
-module.exports = ({msg, broker}) ->
+# =========================================================================
+#  PRIVATE METHODS
+# =========================================================================
+responses =
+  invalidURI: (msg, uri) ->
+    msg.reply "Sorry, #{uri} doesn't look like a valid URI to me"
+
+  unregistered: (msg, uri) ->
+    room = msg.message.user.room
+    msg.reply "#{room} is no longer subscribing to PR changes in repo #{uri}"
+
+  failed: (msg, uri) ->
+    room = msg.message.user.room
+    msg.reply "Something went wrong! Could not unsubscibe from #{uri} in " +
+              "room #{room}"
+
+  exception: (msg, uri, e) ->
+    room = msg.message.user.room
+    msg.reply "An exception occurred! Could not remove subscription for " +
+              "#{uri} in room #{room}. Message: #{e.message}"
+
+
+tryUnregister = (msg, uri, broker) ->
   room = msg.message.user.room
 
-  try
-    apiUrl = broker.getNormalizedApiUrl msg.match?[1]
-    if not apiUrl?
-      msg.reply "Sorry, #{msg.match?[1]} doesn't look like a valid URI to me"
-      return
+  if broker.tryUnregisterRepo uri, room
+    responses.unregistered(msg, uri)
+  else
+    responses.failed(msg, apiUrl)
 
-    if broker.tryUnregisterRepo apiUrl, room
-      msg.reply "#{room} is no longer subscribing to PR changes in repo #{apiUrl}"
+
+module.exports = ({msg, broker}) ->
+  matchedUri = msg.match?[1]
+
+  try
+    apiUrl = broker.getNormalizedApiUrl(matchedUri)
+
+    if apiUrl
+      tryUnregister(msg, apiUrl, broker)
     else
-      msg.reply "Something went wrong! Could not unsubscibe from #{apiUrl} in room #{room}"
+      responses.invalidURI(matchedUri)
   catch e
-    msg.reply "An exception occurred! Could not unsubscibe from #{apiUrl} in room #{room}. Message: #{e.message}"
+    responses.exception(msg, matchedUri, e)
