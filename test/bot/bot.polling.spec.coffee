@@ -12,7 +12,9 @@ bot = rewire('../../src/scripts/bot')
 
 
 describe 'bot | polling', ->
-  context = {}
+  context =
+    api_url: 'http://a.test/rest/api/1.0/projects/p1/repos/r1/pull-requests'
+
 
   beforeEach (done) ->
     testContext (testContext) ->
@@ -40,7 +42,7 @@ describe 'bot | polling', ->
   it 'should send a group message on opened PR', (done) ->
     # given
     pr = helpers.brainFor(context.robot)
-      .repo('http://a.test/rest/api/1.0/projects/p1/repos/r1/pull-requests', ['#mocha'])
+      .repo(context.api_url, ['#mocha'])
       .pr('103', 'OPEN')
       .pr()
 
@@ -59,7 +61,7 @@ describe 'bot | polling', ->
   it 'should send a group message on merged PR', (done) ->
     # given
     pr = helpers.brainFor(context.robot)
-      .repo('http://a.test/rest/api/1.0/projects/p1/repos/r1/pull-requests', ['#mocha'])
+      .repo(context.api_url, ['#mocha'])
       .pr('103', 'MERGED')
       .pr()
 
@@ -78,7 +80,7 @@ describe 'bot | polling', ->
   it 'should send a group message on declined PR', (done) ->
     # given
     pr = helpers.brainFor(context.robot)
-      .repo('http://a.test/rest/api/1.0/projects/p1/repos/r1/pull-requests', ['#mocha'])
+      .repo(context.api_url, ['#mocha'])
       .pr('103', 'DECLINED')
       .pr()
 

@@ -36,7 +36,7 @@ module.exports =
       pr: undefined
 
     api =
-      repo: (api_url, rooms=[], pings=[]) ->
+      repo: (api_url, rooms = [], pings = []) ->
         return ctx.repo unless arguments.length > 0
 
         ctx.repo = ctx.brain[api_url] =
@@ -68,7 +68,9 @@ module.exports =
   nocksFor: (robot, httpStatus = 200) ->
     cb = switch httpStatus
       when 200
-        (u) -> fs.createReadStream(path.resolve "test/fixture/#{u.hostname}_pull-requests.json")
+        (u) ->
+          file = path.resolve "test/fixture/#{u.hostname}_pull-requests.json"
+          fs.createReadStream(file)
       else
         -> {}
 

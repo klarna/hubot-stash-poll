@@ -33,7 +33,9 @@ describe 'utils | broker', ->
     describe 'given an empty brain', ->
       it 'should save a new repo subscription to the brain', ->
         # given
-        api_url = 'http://a.com/rest/api/1.0/projects/proj1/repos/repo1/pull-requests'
+        api_url =
+          'http://a.com/rest/api/1.0/projects/proj1/repos/repo1/pull-requests'
+
         mock = { brain: data: {} }
         helpers.brainFor(mock)
           .repo(api_url)
@@ -45,8 +47,9 @@ describe 'utils | broker', ->
 
         # then
         promise.then ->
-          expect(context.robot.brain.data['stash-poll'][api_url].api_url).to.eql api_url
-          expect(context.robot.brain.data['stash-poll'][api_url].rooms).to.eql ['#room']
+          repo = context.robot.brain.data['stash-poll'][api_url]
+          expect(repo.api_url).to.eql api_url
+          expect(repo.rooms).to.eql ['#room']
 
 
     describe 'given a non-empty brain', ->
@@ -87,12 +90,19 @@ describe 'utils | broker', ->
 
 
     it 'should trim whitespace for valid urls', ->
-      expect(context.broker.getNormalizedApiUrl '  http://github.com/  ').to.eql 'http://github.com/'
+      # given
+      normalized = context.broker.getNormalizedApiUrl '  http://github.com/  '
+
+      # then
+      expect(normalized).to.eql 'http://github.com/'
 
 
     it 'should lower case the url', ->
-      expect(context.broker.getNormalizedApiUrl 'HTTP://GITHUB.COM/').to.eql 'http://github.com/'
+      # given
+      normalized = context.broker.getNormalizedApiUrl 'HTTP://GITHUB.COM/'
 
+      # then
+      expect(normalized).to.eql 'http://github.com/'
 
 
   # =========================================================================

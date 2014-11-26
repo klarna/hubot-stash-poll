@@ -10,7 +10,8 @@ var gulp = require('gulp'),
 gulp.task('lint', function () {
     return gulp.src(['test/**/*.coffee', 'src/**/*.coffee'])
         .pipe(coffeelint())
-        .pipe(coffeelint.reporter('failOnWarning'));
+        .pipe(coffeelint.reporter())
+        .pipe(coffeelint.reporter('fail'));
 });
 
 

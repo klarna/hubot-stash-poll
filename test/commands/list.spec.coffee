@@ -36,7 +36,11 @@ describe 'bot | commands | list', ->
   #  LISTENER
   # =========================================================================
   it 'should register a listener', ->
-    expect(context.robot.respond.withArgs(/stash-poll$/i).calledOnce).to.equal true
+    # given
+    stub = context.robot.respond.withArgs(/stash-poll$/i)
+
+    # then
+    expect(stub.calledOnce).to.equal true
 
 
   # =========================================================================

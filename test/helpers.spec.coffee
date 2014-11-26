@@ -57,21 +57,23 @@ describe 'helpers', ->
 
     it 'should set a pull request', ->
       # given
+      api_url = 'http://foo.bar/rest/api/1.0/projects/p1/repos/r1/pull-requests'
       brain = helpers.brainFor(mockbot)
-        .repo('http://foo.bar/rest/api/1.0/projects/p1/repos/r1/pull-requests', ['#r00m'])
+        .repo(api_url, ['#r00m'])
           .pr('101', 'DECLINED')
         .get()
 
       # then
       expect(brain).to.eql
         'http://foo.bar/rest/api/1.0/projects/p1/repos/r1/pull-requests':
-          api_url: 'http://foo.bar/rest/api/1.0/projects/p1/repos/r1/pull-requests'
+          api_url: api_url
           rooms: ['#r00m']
           pings: []
           pull_requests:
             '101':
               state: 'DECLINED'
-              title: '#101 @ http://foo.bar/projects/p1/repos/r1/pull-requests/101'
+              title:
+                '#101 @ http://foo.bar/projects/p1/repos/r1/pull-requests/101'
               url: 'http://foo.bar/projects/p1/repos/r1/pull-requests/101'
 
 

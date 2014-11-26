@@ -1,22 +1,48 @@
 format = require '../utils/format'
 
 
-module.exports = ({broker, msg}) ->
+# =========================================================================
+#  PRIVATE METHODS
+# =========================================================================
+responses =
+  invalidURI: (msg, uri) ->
+    msg.reply "Sorry, #{uri} doesn't look like a valid URI to me"
+
+  registered: (msg, name) ->
+    room = msg.message.user.room
+    msg.reply "#{room} is now subscribing to PR changes from #{name}"
+
+  invalidRepo: (msg, uri) ->
+    msg.reply "#{uri} does not appear to be a valid repo (or, I lack access)"
+
+  exception: (msg, uri, e) ->
+    room = msg.message.user.room
+    msg.reply "An exception occurred! Could not add subscription for #{uri} " +
+              "in room #{room}. Message: #{e.message}"
+
+
+tryRegister = (msg, uri, broker) ->
   room = msg.message.user.room
 
-  try
-    apiUrl = broker.getNormalizedApiUrl msg.match?[1]
-    if not apiUrl?
-      msg.reply "Sorry, #{msg.match?[1]} doesn't look like a valid URI to me"
-      return
+  broker.tryRegisterRepo(uri, room)
+    .then ->
+      name = format.repo.nameFromUrl(uri) or uri
+      responses.registered(msg, name)
+    .fail (e) ->
+      responses.invalidRepo(msg, uri)
 
-    broker.tryRegisterRepo(apiUrl, room)
-      .then ->
-        name = format.repo.nameFromUrl(apiUrl) or apiUrl
-        msg.reply "#{room} is now subscribing to PR changes from #{name}"
-      .fail (e) ->
-        msg.reply "#{apiUrl} does not appear to be a valid repo (or, I lack access)"
-        if e
-          msg.reply e.toString()
+
+# =========================================================================
+#  EXPORTS
+# =========================================================================
+module.exports = ({broker, msg}) ->
+  matchedUri = msg.match?[1]
+  try
+    apiUrl = broker.getNormalizedApiUrl(matchedUri)
+
+    if apiUrl
+      tryRegister(msg, apiUrl, broker)
+    else
+      responses.invalidURI(msg, matchedUri)
   catch e
-    msg.reply "An exception occurred! Could not add subscription for #{apiUrl} in room #{room}. Message: #{e.message}"
+    responses.exception(msg, matchedUri, e)

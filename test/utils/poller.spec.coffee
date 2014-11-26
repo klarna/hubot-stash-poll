@@ -17,6 +17,10 @@ describe 'utils | poller', ->
     # event listeners
     context.listeners = []
 
+    context.api_urls =
+      a: 'http://a.com/rest/api/1.0/projects/proj1/repos/repo1/pull-requests'
+      b: 'http://b.com/rest/api/1.0/projects/proj2/repos/repo2/pull-requests'
+
     testContext (testContext) ->
       context.robot = testContext.robot
       context.sandbox = testContext.sandbox
@@ -53,8 +57,8 @@ describe 'utils | poller', ->
     it 'should create a HTTP request for each repo', ->
       # given
       helpers.brainFor(context.robot)
-        .repo('http://a.com/rest/api/1.0/projects/proj1/repos/repo1/pull-requests')
-        .repo('http://b.com/rest/api/1.0/projects/proj2/repos/repo2/pull-requests')
+        .repo(context.api_urls.a)
+        .repo(context.api_urls.b)
 
       # when
       promise = context.fetch()
@@ -68,7 +72,7 @@ describe 'utils | poller', ->
     it 'should emit an event for an unseen PR that is open', (done) ->
       # given
       helpers.brainFor(context.robot)
-        .repo('http://a.com/rest/api/1.0/projects/proj1/repos/repo1/pull-requests')
+        .repo(context.api_urls.a)
           .pr('101', 'OPEN')
           .pr('102', 'MERGED')
           .pr('103', 'DECLINED')
@@ -76,7 +80,7 @@ describe 'utils | poller', ->
       unseen =
         pr_id: 104
         pr_url: 'http://a.com/projects/proj1/repos/repo1/pull-requests/104'
-        api_url: 'http://a.com/rest/api/1.0/projects/proj1/repos/repo1/pull-requests'
+        api_url: context.api_urls.a
         pr_title: 'Pr 104, Repo 1, Project 1'
 
       spy = context.sandbox.spy()
@@ -94,7 +98,7 @@ describe 'utils | poller', ->
     it 'should emit an event for an existing PR that has been merged', (done) ->
       # given
       pr = helpers.brainFor(context.robot)
-        .repo('http://a.com/rest/api/1.0/projects/proj1/repos/repo1/pull-requests')
+        .repo(context.api_urls.a)
           .pr('102', 'OPEN')
           .pr()
 
@@ -113,10 +117,10 @@ describe 'utils | poller', ->
       context.fetch()
 
 
-    it 'should emit an event for an existing PR that has been declined', (done) ->
+    it 'should emit an event for an existing PR that was declined', (done) ->
       # given
       pr = helpers.brainFor(context.robot)
-        .repo('http://a.com/rest/api/1.0/projects/proj1/repos/repo1/pull-requests')
+        .repo(context.api_urls.a)
           .pr('103', 'OPEN')
           .pr()
 
@@ -138,7 +142,7 @@ describe 'utils | poller', ->
     it 'should not emit an event for an unseen PR that is merged', (done) ->
       # given
       helpers.brainFor(context.robot)
-        .repo('http://a.com/rest/api/1.0/projects/proj1/repos/repo1/pull-requests')
+        .repo(context.api_urls.a)
           .pr('105', 'MERGED')
           .pr()
 
@@ -157,7 +161,7 @@ describe 'utils | poller', ->
     it 'should not emit an event for an unseen PR that is declined', (done) ->
       # given
       helpers.brainFor(context.robot)
-        .repo('http://a.com/rest/api/1.0/projects/proj1/repos/repo1/pull-requests')
+        .repo(context.api_urls.a)
           .pr('106', 'DECLINED')
 
       spy = context.sandbox.spy()
@@ -172,10 +176,10 @@ describe 'utils | poller', ->
       context.fetch()
 
 
-    it 'should not emit an event for an existing PR if state is unchanged', (done) ->
+    it 'should not emit an event for an existing, unchanged PR', (done) ->
       # given
       brainCtx = helpers.brainFor(context.robot)
-        .repo('http://a.com/rest/api/1.0/projects/proj1/repos/repo1/pull-requests')
+        .repo(context.api_urls.a)
 
       pr101 = brainCtx.pr('101', 'OPEN').pr()
       pr102 = brainCtx.pr('101', 'MERGED').pr()
@@ -195,7 +199,8 @@ describe 'utils | poller', ->
       onEmit 'poll:end', ->
         # then
         helpers.asyncAssert done, ->
-          expect(spy.calledWithExactly arg).to.equal false for arg in forbiddenArgs
+          for arg in forbiddenArgs
+            expect(spy.calledWithExactly arg).to.equal false
 
       # when
       context.fetch()
@@ -204,7 +209,7 @@ describe 'utils | poller', ->
     it 'should persist PR state after poll', (done) ->
       # given
       pr = helpers.brainFor(context.robot)
-        .repo('http://a.com/rest/api/1.0/projects/proj1/repos/repo1/pull-requests')
+        .repo(context.api_urls.a)
           .pr('103', 'OPEN')
           .pr()
 
@@ -311,7 +316,7 @@ describe 'utils | poller', ->
     it 'should reset failcount on a successful fetch', ->
       # given
       repo = helpers.brainFor(context.robot)
-        .repo('http://a.com/rest/api/1.0/projects/proj1/repos/repo1/pull-requests')
+        .repo(context.api_urls.a)
         .repo()
 
       helpers.nocksFor context.robot

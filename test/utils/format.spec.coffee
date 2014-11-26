@@ -69,13 +69,15 @@ describe 'utils | format', ->
   #  .repo
   # =========================================================================
   describe '.repo', ->
+
     # =========================================================================
     #  .nameFromUrl()
     # =========================================================================
     describe '.nameFromUrl()', ->
       it 'should return a name for a matching URL', ->
         # given
-        api_url = 'http://test_repo1.com/rest/api/1.0/projects/foo-inc/repos/bar.git/pull-requests'
+        api_url = 'http://test_repo1.com/rest/api/1.0/projects/foo-inc/repos' +
+                  '/bar.git/pull-requests'
 
         # then
         expect(format.repo.nameFromUrl api_url).to.eql 'foo-inc/bar.git'
@@ -155,7 +157,8 @@ describe 'utils | format', ->
         # given
         room = '#mocha'
         repos = [
-          api_url: 'http://test_repo1.com/rest/api/1.0/projects/proj1/repos/repo1/pull-requests'
+          api_url: 'http://test_repo1.com/rest/api/1.0/projects/proj1/repos' +
+                   '/repo1/pull-requests'
           repo_name: 'proj1/repo1'
         ,
           api_url: 'http://r2.com/'
@@ -254,10 +257,12 @@ describe 'utils | format', ->
       it 'should include the failCount', ->
         # given
         repo =
-          api_url: 'http://test_repo1.com/rest/api/1.0/projects/foo-inc/repos/bar.git/pull-requests'
+          api_url: 'http://test_repo1.com/rest/api/1.0/projects/foo-inc' +
+                   '/repos/bar.git/pull-requests'
           failCount: 3
 
-        expected = "NOTE: there has been 3 consecutive fails of fetching #{repo.api_url}"
+        expected =
+          "NOTE: there has been 3 consecutive fails of fetching #{repo.api_url}"
 
         # then
         expect(format.repo.failed repo).to.equal expected

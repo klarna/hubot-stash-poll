@@ -29,8 +29,11 @@ describe 'bot | commands | rm', ->
   # =========================================================================
   whenRemoving = (api_url, expectCallback) ->
     message = "stash-poll rm #{api_url}"
+
     helpers.onRobotReply context.robot, context.user, message, (replyData) ->
-      replyData.referencedRepo = context.robot.brain.data['stash-poll']?[api_url]
+      replyData.referencedRepo =
+        context.robot.brain.data['stash-poll']?[api_url]
+
       expectCallback(replyData)
 
 
@@ -38,19 +41,26 @@ describe 'bot | commands | rm', ->
   #  LISTENER
   # =========================================================================
   it 'should register a listener', ->
-    expect(context.robot.respond.withArgs(/stash-poll rm (.*)/i).calledOnce).to.equal true
+    # given
+    stub = context.robot.respond.withArgs(/stash-poll rm (.*)/i)
+
+    # then
+    expect(stub.calledOnce).to.equal true
 
 
   # =========================================================================
   #  NON-EMPTY BRAIN
   # =========================================================================
   describe 'given a non-empty brain', ->
-    it 'should unsubscribe the room from the given repo', () ->
+    it 'should unsubscribe the room from the given repo', ->
       # given
       helpers.brainFor(context.robot)
         .repo('http://mocha.com/', ['#mocha', '#abc'])
 
+      expected = '#mocha is no longer subscribing to PR changes in repo ' +
+                 'http://mocha.com/'
+
       # then
       whenRemoving 'http://mocha.com/', ({referencedRepo, envelope, strings}) ->
         expect(referencedRepo.rooms).to.eql ['#abc']
-        expect(strings[0]).to.equal "#{envelope.room} is no longer subscribing to PR changes in repo http://mocha.com/"
+        expect(strings[0]).to.equal expected

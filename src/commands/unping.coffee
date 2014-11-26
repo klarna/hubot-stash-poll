@@ -1,6 +1,31 @@
 format = require '../utils/format'
 
 
+# =========================================================================
+#  PRIVATE METHODS
+# =========================================================================
+responses =
+  notSubscribing: (msg, uri) ->
+    room = msg.message.user.room
+    msg.reply "#{room} is not subscribing to #{uri} - maybe you should add it?"
+
+  removed: (msg, uri, name) ->
+    msg.reply "Notifications for #{uri} will no longer ping #{name}"
+
+  invalidRepo: (msg, uri) ->
+    msg.reply "There was no repo with api url #{uri} - maybe you should add it?"
+
+
+getSubscribedRepo = (room, broker, uri) ->
+  repos = broker.getSubscribedReposFor room
+
+  for r in repos when r.api_url is uri
+    return r
+
+
+# =========================================================================
+#  EXPORTS
+# =========================================================================
 module.exports = ({msg, broker}) ->
   room = msg.message.user.room
   name = msg.match?[1]
@@ -8,16 +33,17 @@ module.exports = ({msg, broker}) ->
   repo = broker.getRepo apiUrl
 
   if repo?
-    repos = broker.getSubscribedReposFor room
-    for r in repos
-      if r.api_url is repo.api_url
-        repo.pings ||= []
-        index = repo.pings.indexOf name
-        if index isnt -1
-          repo.pings.splice index, 1
+    subscribedRepo = getSubscribedRepo(room, broker, apiUrl)
 
-        msg.reply "Notifications for #{apiUrl} will no longer ping #{name}"
-        return
-    msg.reply "#{room} is not subscribing to http://a.com/foo - maybe you should add it?"
+    if subscribedRepo?
+      repo.pings ||= []
+
+      index = repo.pings.indexOf name
+      if index isnt -1
+        repo.pings.splice index, 1
+
+      responses.removed(msg, apiUrl, name)
+    else
+      responses.notSubscribing(msg, apiUrl)
   else
-    msg.reply "There was no repo with api url #{apiUrl} - maybe you should add it?"
+    responses.invalidRepo(msg, apiUrl)

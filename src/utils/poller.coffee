@@ -56,21 +56,23 @@ class Poller
     try
       fetchUrl = @_buildFetchUrl repo.api_url
 
-      @robot.http(fetchUrl).auth(config.username, config.password).get() (err, res, body) =>
-        if err?
-          fail(err)
-        else
-          json = try
-            JSON.parse body
-
-          pullRequests = json?.values
-
-          if pullRequests?
-            @_upsertPullrequests pullRequests, repo
-            repo.failCount = 0
-            deferred.resolve(repo)
+      @robot.http(fetchUrl)
+        .auth(config.username, config.password)
+        .get() (err, res, body) =>
+          if err?
+            fail(err)
           else
-            fail(new Error "Invalid JSON format, expected { values: [] }")
+            json = try
+              JSON.parse body
+
+            pullRequests = json?.values
+
+            if pullRequests?
+              @_upsertPullrequests pullRequests, repo
+              repo.failCount = 0
+              deferred.resolve(repo)
+            else
+              fail(new Error "Invalid JSON format, expected { values: [] }")
     catch e
       fail(e)
 
