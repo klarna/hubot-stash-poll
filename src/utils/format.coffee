@@ -42,7 +42,8 @@ module.exports =
 
 
     failed: (repo) ->
-      expected = "NOTE: there has been #{repo.failCount} consecutive fails of fetching #{repo.api_url}"
+      expected = "NOTE: there has been #{repo.failCount} consecutive fails " +
+                 "of fetching #{repo.api_url}"
 
 
 

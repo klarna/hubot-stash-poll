@@ -41,7 +41,9 @@ describe 'bot | commands | add', ->
 
     message = "stash-poll add #{api_url}"
     helpers.onRobotReply context.robot, context.user, message, (replyData) ->
-      replyData.referencedRepo = context.robot.brain.data['stash-poll']?[api_url]
+      referencedRepo = context.robot.brain.data['stash-poll']?[api_url]
+      replyData.referencedRepo = referencedRepo
+
       deferred.resolve(replyData)
 
     deferred.promise
@@ -52,29 +54,23 @@ describe 'bot | commands | add', ->
   # =========================================================================
   describe 'listener', ->
     it 'should register', ->
-      expect(context.robot.respond.withArgs(/stash-poll add (.*)/i).calledOnce).to.equal true
+      # given
+      stub = context.robot.respond.withArgs(/stash-poll add (.*)/i)
+
+      # then
+      expect(stub.calledOnce).to.equal true
 
 
     it 'should send an error message when uri is invalid', ->
-      whenAdding('!@£$%').then ({envelope, strings})->
-        expect(strings[0]).to.equal "Sorry, !@£$% doesn't look like a valid URI to me"
-
-
-    it 'should acknowledge a repo subscription with friendly name if possible', ->
       # given
-      mock = { brain: data: {} }
-      repo = helpers.brainFor(mock)
-        .repo('http://a.com/api/projects/asdf/repos/f00')
-        .repo()
-
-      helpers.nocksFor(mock)
+      expected = "Sorry, !@£$% doesn't look like a valid URI to me"
 
       # then
-      whenAdding(repo.api_url).then ({envelope, strings})->
-        expect(strings[0]).to.equal "#{envelope.room} is now subscribing to PR changes from asdf/f00"
+      whenAdding('!@£$%').then ({envelope, strings}) ->
+        expect(strings[0]).to.equal expected
 
 
-    it 'should acknowledge a repo subscription with api url if friendly name not possible', ->
+    it 'should acknowledge a repo add with api url', ->
       # given
       mock = { brain: data: {} }
       repo = helpers.brainFor(mock)
@@ -82,15 +78,36 @@ describe 'bot | commands | add', ->
         .repo()
 
       helpers.nocksFor(mock)
+      expected = "#mocha is now subscribing to PR changes from http://a.com/foo"
 
-      whenAdding(repo.api_url).then ({envelope, strings})->
-        expect(strings[0]).to.equal "#{envelope.room} is now subscribing to PR changes from http://a.com/foo"
+      # then
+      whenAdding(repo.api_url).then ({envelope, strings}) ->
+        expect(strings[0]).to.equal expected
+
+
+    it 'should acknowledge a repo add with friendly name if possible', ->
+      # given
+      mock = { brain: data: {} }
+      repo = helpers.brainFor(mock)
+        .repo('http://a.com/api/projects/asdf/repos/f00')
+        .repo()
+
+      helpers.nocksFor(mock)
+      expected = "#mocha is now subscribing to PR changes from asdf/f00"
+
+      # then
+      whenAdding(repo.api_url).then ({envelope, strings}) ->
+        expect(strings[0]).to.equal expected
 
 
     it 'should send an error message when subscribing to an invalid repo', ->
       # given
-      whenAdding('http://fail.whale/foo', 404).then ({envelope, strings})->
-        expect(strings[0]).to.equal "http://fail.whale/foo does not appear to be a valid repo (or, I lack access)"
+      expected = "http://fail.whale/foo does not appear to be a valid repo " +
+                 "(or, I lack access)"
+
+      # then
+      whenAdding('http://fail.whale/foo', 404).then ({envelope, strings}) ->
+        expect(strings[0]).to.equal expected
 
 
 
@@ -99,7 +116,7 @@ describe 'bot | commands | add', ->
   # =========================================================================
   describe 'given an empty brain', ->
     it 'should save a new repo subscription to the brain', ->
-      whenAdding('http://a.com/bar').then ({referencedRepo, envelope})->
+      whenAdding('http://a.com/bar').then ({referencedRepo, envelope}) ->
         expect(referencedRepo.api_url).to.eql 'http://a.com/bar'
         expect(referencedRepo.rooms).to.eql [envelope.room]
 
@@ -115,10 +132,10 @@ describe 'bot | commands | add', ->
 
 
     it 'should push the room to a repo if it doesn\'t already exist', ->
-      whenAdding('http://b.com/').then ({referencedRepo})->
+      whenAdding('http://b.com/').then ({referencedRepo}) ->
         expect(referencedRepo.rooms).to.eql ['#abc','#mocha']
 
 
     it 'should not push the room to a repo if it already exists', ->
-      whenAdding('http://a.com/').then ({referencedRepo})->
+      whenAdding('http://a.com/').then ({referencedRepo}) ->
         expect(referencedRepo.rooms).to.eql ['#mocha']
