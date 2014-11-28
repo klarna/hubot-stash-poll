@@ -9,8 +9,8 @@
 #   hubot stash-poll - Lists the subscriptions in the current room
 #   hubot stash-poll add <api url> - Subscribe current room to PR changes on the given API url, e.g. https://stashurl.com/rest/api/1.0/projects/MYPROJ/repos/MYREPO/pull-requests
 #   hubot stash-poll rm <api url> - Unsubscribe current room from PR changes on the given API url, e.g. https://stashurl.com/rest/api/1.0/projects/MYPROJ/repos/MYREPO/pull-requests
-#   hubot stash-poll ping <name> <api url> - Pings the given name on PR changes from the given API url
-#   hubot stash-poll unping <name> <api url> - Remove pings for the given name on PR changes from the given API url
+#   hubot stash-poll ping <name> <api url> - Pings the given name when a PR is opened on the given API url
+#   hubot stash-poll unping <name> <api url> - Remove pings for the given name when PR opens on the given API url
 #
 # Authors:
 #   Christoffer Skeppstedt (chris.skeppstedt@klarna.com, http://github.com/cskeppstedt/)
