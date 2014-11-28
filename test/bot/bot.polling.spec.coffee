@@ -42,7 +42,7 @@ describe 'bot | polling', ->
   it 'should send a group message on opened PR', (done) ->
     # given
     pr = helpers.brainFor(context.robot)
-      .repo(context.api_url, ['#mocha'])
+      .repo(context.api_url, ['#mocha'], ['@pingme'])
       .pr('103', 'OPEN')
       .pr()
 

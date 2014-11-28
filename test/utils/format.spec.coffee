@@ -23,6 +23,22 @@ describe 'utils | format', ->
       expect(format.pr.opened input).to.eql expected
 
 
+    it 'should append pings when formatting an opened PR', ->
+      # given
+      input =
+        pr_id: '1122'
+        pr_url: 'http://foo.bar/pr/1122'
+        pr_title: 'Foo request'
+        pings: ['@foo', '#bar']
+
+      expected = '#1122 (Foo request) opened: http://foo.bar/pr/1122 ' +
+        '(ping @foo #bar)'
+
+      # then
+      expect(format.pr.opened input).to.eql expected
+
+
+
     it 'should format a merged PR', ->
       # given
       input =

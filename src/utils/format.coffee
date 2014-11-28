@@ -52,7 +52,14 @@ module.exports =
   # =========================================================================
   pr:
     opened: (prData) ->
-      "##{prData.pr_id} (#{prData.pr_title}) opened: #{prData.pr_url}"
+      str = "##{prData.pr_id} (#{prData.pr_title}) opened: #{prData.pr_url}"
+
+      if prData.pings?
+        "#{str} (ping #{prData.pings.join ' '})"
+      else
+        str
+
+
 
     merged: (prData) ->
       "##{prData.pr_id} (#{prData.pr_title}) merged: #{prData.pr_url}"
