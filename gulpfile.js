@@ -29,7 +29,7 @@ gulp.task('mocha', function() {
 gulp.task('mocha-watch', function() {
     return gulp.src(['test/**/*.spec.coffee'], { read: false })
         .pipe(mocha({
-            reporter: 'min',
+            reporter: 'list',
             compilers: 'coffee:coffee-script',
             env: { 'NODE_ENV': 'test' }
         }));
