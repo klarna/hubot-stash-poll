@@ -4,6 +4,7 @@
   "description": "Hubot script that polls Stash for pull request changes",
   "main": "index.coffee",
   "scripts": {
+    "start": "gulp watch",
     "test": "script/test"
   },
   "repository": {
