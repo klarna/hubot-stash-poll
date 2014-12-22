@@ -15,13 +15,14 @@ module.exports =
         undefined
 
 
-    list: (repos, inRoom) ->
+    list: (repos, roomName) ->
       if not repos? or repos.length is 0
-        "#{inRoom} is not subscribing to any PR changes"
+        "#{roomName} is not subscribing to any PR changes"
       else
         repo = repos[0]
         lines = [
-          "#{inRoom} is subscribing to PR changes from #{repos.length} repo(s):"
+          "#{roomName} is subscribing to PR changes " +
+          "from #{repos.length} repo(s):"
         ]
 
         for repo in repos
@@ -60,9 +61,9 @@ module.exports =
         str
 
 
-
     merged: (prData) ->
       "##{prData.pr_id} (#{prData.pr_title}) merged: #{prData.pr_url}"
+
 
     declined: (prData) ->
       "##{prData.pr_id} (#{prData.pr_title}) declined: #{prData.pr_url}"
@@ -73,3 +74,15 @@ module.exports =
       pr_url: url
       pr_title: title
       api_url: api_url
+
+
+
+  # =========================================================================
+  #  ROOM
+  # =========================================================================
+  room:
+    handle: (msg) ->
+      roomName = msg.message.user.room
+      replyTo = msg.message.user.reply_to
+
+      replyTo ? roomName

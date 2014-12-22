@@ -81,6 +81,32 @@ describe 'utils | format', ->
         api_url: 'api.foo'
 
 
+
+  # =========================================================================
+  #  .room
+  # =========================================================================
+  describe '.room', ->
+    describe '.handle()', ->
+      it 'should return reply_to when available', ->
+        # given
+        msg = message: user:
+          room: 'foo'
+          reply_to: 'bar'
+
+        # then
+        expect(format.room.handle msg).to.eql 'bar'
+
+
+      it 'should return room when reply_to not available', ->
+        # given
+        msg = message: user:
+          room: 'fooz'
+
+        # then
+        expect(format.room.handle msg).to.eql 'fooz'
+
+
+
   # =========================================================================
   #  .repo
   # =========================================================================
