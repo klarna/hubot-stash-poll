@@ -22,9 +22,9 @@ responses =
 
 
 tryRegister = (msg, uri, broker) ->
-  room = msg.message.user.room
+  roomHandle = format.room.handle(msg)
 
-  broker.tryRegisterRepo(uri, room)
+  broker.tryRegisterRepo(uri, roomHandle)
     .then ->
       name = format.repo.nameFromUrl(uri) or uri
       responses.registered(msg, name)

@@ -16,30 +16,32 @@ responses =
     msg.reply "There was no repo with api url #{uri} - maybe you should add it?"
 
 
-getSubscribedRepo = (room, broker, uri) ->
-  repos = broker.getSubscribedReposFor room
+getSubscribedRepo = (roomHandle, broker, uri) ->
+  repos = broker.getSubscribedReposFor roomHandle
 
   for r in repos when r.api_url is uri
     return r
+
+
+inPingList = (repo, name) ->
+  repo.pings?.indexOf(name) >= 0
 
 
 # =========================================================================
 #  EXPORTS
 # =========================================================================
 module.exports = ({msg, broker}) ->
-  room = msg.message.user.room
+  roomHandle = format.room.handle(msg)
   name = msg.match?[1]
-  apiUrl = broker.getNormalizedApiUrl msg.match?[2]
-  repo = broker.getRepo apiUrl
+  apiUrl = broker.getNormalizedApiUrl(msg.match?[2])
 
-  if repo?
-    subscribedRepo = getSubscribedRepo(room, broker, apiUrl)
+  if broker.getRepo(apiUrl)?
+    subscribedRepo = getSubscribedRepo(roomHandle, broker, apiUrl)
 
     if subscribedRepo?
-      repo.pings ||= []
-
-      if repo.pings.indexOf name is -1
-        repo.pings.push name
+      unless inPingList(subscribedRepo, name)
+        subscribedRepo.pings ||= []
+        subscribedRepo.pings.push(name)
 
       responses.added(msg, apiUrl, name)
     else

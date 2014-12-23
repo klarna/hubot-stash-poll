@@ -24,9 +24,9 @@ responses =
 
 
 tryUnregister = (msg, uri, broker) ->
-  room = msg.message.user.room
+  roomHandle = format.room.handle(msg)
 
-  if broker.tryUnregisterRepo uri, room
+  if broker.tryUnregisterRepo(uri, roomHandle)
     responses.unregistered(msg, uri)
   else
     responses.failed(msg, apiUrl)
