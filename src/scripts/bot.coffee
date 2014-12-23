@@ -80,8 +80,8 @@ bot = (robot) ->
     repo = robot.brain.data['stash-poll']?[forApiUrl]
     return if not repo? or not repo.rooms?
 
-    for room in repo.rooms
-      robot.messageRoom room, message
+    for roomHandle in repo.rooms
+      robot.messageRoom(roomHandle, message)
 
 
   utils.poller.events.on 'pr:open', (prData) ->
