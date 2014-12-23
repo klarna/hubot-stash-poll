@@ -1,6 +1,6 @@
 {
   "name": "hubot-stash-poll",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Hubot script that polls Stash for pull request changes",
   "main": "index.coffee",
   "scripts": {
