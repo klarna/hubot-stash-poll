@@ -1,6 +1,6 @@
 {
   "name": "hubot-stash-poll",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Hubot script that polls Stash for pull request changes",
   "main": "index.coffee",
   "scripts": {
@@ -11,6 +11,14 @@
     "type": "git",
     "url": "ssh://git@github.com:klarna/hubot-stash-poll.git"
   },
+  "keywords": [
+    "hubot",
+    "stash",
+    "pullrequest",
+    "pullrequests",
+    "pull request",
+    "pull requests"
+  ],
   "dependencies": {
     "q": "^1.0.1"
   },
