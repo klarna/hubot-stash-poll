@@ -5,10 +5,6 @@
 A Hubot script that polls pull request status from Atlassian Stash. It can also list open
 pull requests. See [`src/scripts/bot.coffee`](src/scripts/bot.coffee) for command documentation.
 
-## Installation
-
-    $ npm install hubot-stash-poll
-
 ## Example
 
     christoffer> hubot stash-poll add https://stashurl.com/rest/api/1.0/projects/MYPROJ/repos/MYREPO/pull-requests
@@ -19,6 +15,18 @@ The bot will poll the repos every minute (configurable) and will post a message 
     Hubot> #137 (Bugfix for foobar) opened: https://stashurl.com/projects/MYPROJ/repos/MYREPO/pull-requests/137
 
 See [`src/scripts/bot.coffee`](src/scripts/bot.coffee) for further command documentation.
+
+## Installation
+
+    $ npm install --save hubot-stash-poll
+
+Edit `external-scripts.json` to contain the script:
+
+    [
+      // ... snip ...
+      "hubot-redis-brain",
+      "hubot-stash-poll"
+    ]
 
 ## Configuration
 
