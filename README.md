@@ -7,7 +7,7 @@ pull requests. See [`src/scripts/bot.coffee`](src/scripts/bot.coffee) for comman
 
 ## Installation
 
-    $ npm install git://github.com/klarna/hubot-stash-poll
+    $ npm install hubot-stash-poll
 
 ## Example
 
