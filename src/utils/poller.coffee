@@ -110,6 +110,8 @@ class Poller
       prLinks = pr.links?.self?.filter (link) -> link.href?
       pr_url = prLinks?[0]?.href
 
+      pr_reviewers = pr.reviewers?.map (reviewer) -> reviewer.user.name
+        
       eventName = switch pr.state.toLowerCase()
         when 'open'     then 'pr:open'
         when 'merged'   then 'pr:merge'
@@ -126,6 +128,7 @@ class Poller
           id: pr.id
           title: pr.title
           url: pr_url
+          reviewers: pr_reviewers
 
       forRepo.pull_requests[pr.id].state = pr.state
 
@@ -133,6 +136,7 @@ class Poller
         id: pr.id
         url: pr_url
         title: pr.title
+        reviewers: pr_reviewers
         api_url: forRepo.api_url
 
 

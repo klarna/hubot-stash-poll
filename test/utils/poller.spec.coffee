@@ -80,6 +80,7 @@ describe 'utils | poller', ->
       unseen =
         pr_id: 104
         pr_url: 'http://a.com/projects/proj1/repos/repo1/pull-requests/104'
+        pr_reviewers: ['testuser']
         api_url: context.api_urls.a
         pr_title: 'Pr 104, Repo 1, Project 1'
 
