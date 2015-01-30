@@ -53,7 +53,12 @@ module.exports =
   # =========================================================================
   pr:
     opened: (prData) ->
-      str = "##{prData.pr_id} (#{prData.pr_title}) opened: #{prData.pr_url}"
+      if prData.pr_reviewers?.length > 0
+        reviewers = "for #{prData.pr_reviewers.join(', ')} "
+      else
+        reviewers = ""
+
+      str = "Opened: ##{prData.pr_id} (#{prData.pr_title}) #{reviewers}#{prData.pr_url}"
 
       if prData.pings?
         "#{str} (ping #{prData.pings.join ' '})"
@@ -62,18 +67,19 @@ module.exports =
 
 
     merged: (prData) ->
-      "##{prData.pr_id} (#{prData.pr_title}) merged: #{prData.pr_url}"
+      "Merged: ##{prData.pr_id} (#{prData.pr_title}) #{prData.pr_url}"
 
 
     declined: (prData) ->
-      "##{prData.pr_id} (#{prData.pr_title}) declined: #{prData.pr_url}"
+      "Declined: ##{prData.pr_id} (#{prData.pr_title}) #{prData.pr_url}"
 
 
-    toEmitFormat: ({id, url, title, api_url}) ->
+    toEmitFormat: ({id, url, title, api_url, reviewers}) ->
       pr_id: id
       pr_url: url
       pr_title: title
       api_url: api_url
+      pr_reviewers: reviewers
 
 
 

@@ -16,8 +16,9 @@ describe 'utils | format', ->
         pr_id: '1122'
         pr_url: 'http://foo.bar/pr/1122'
         pr_title: 'Foo request'
+        pr_reviewers: ['a', 'b']
 
-      expected = '#1122 (Foo request) opened: http://foo.bar/pr/1122'
+      expected = 'Opened: #1122 (Foo request) for a, b http://foo.bar/pr/1122'
 
       # then
       expect(format.pr.opened input).to.eql expected
@@ -30,8 +31,9 @@ describe 'utils | format', ->
         pr_url: 'http://foo.bar/pr/1122'
         pr_title: 'Foo request'
         pings: ['@foo', '#bar']
+        pr_reviewers: ['a', 'b']
 
-      expected = '#1122 (Foo request) opened: http://foo.bar/pr/1122 ' +
+      expected = 'Opened: #1122 (Foo request) for a, b http://foo.bar/pr/1122 ' +
         '(ping @foo #bar)'
 
       # then
@@ -46,7 +48,7 @@ describe 'utils | format', ->
         pr_url: 'http://baz/pr/78'
         pr_title: 'Add baz'
 
-      expected = '#78 (Add baz) merged: http://baz/pr/78'
+      expected = 'Merged: #78 (Add baz) http://baz/pr/78'
 
       # then
       expect(format.pr.merged input).to.eql expected
@@ -59,7 +61,7 @@ describe 'utils | format', ->
         pr_url: 'http://yo.yo/pr/33'
         pr_title: 'Fix tests'
 
-      expected = '#33 (Fix tests) declined: http://yo.yo/pr/33'
+      expected = 'Declined: #33 (Fix tests) http://yo.yo/pr/33'
 
       # then
       expect(format.pr.declined input).to.eql expected
@@ -71,6 +73,7 @@ describe 'utils | format', ->
         id: 123
         url: 'foo.bar'
         title: 'abc'
+        reviewers: ['a', 'b']
         api_url: 'api.foo'
 
       # then
@@ -78,9 +81,31 @@ describe 'utils | format', ->
         pr_id: 123
         pr_url: 'foo.bar'
         pr_title: 'abc'
+        pr_reviewers: ['a', 'b']
         api_url: 'api.foo'
 
+    it 'must leave out reviewer text if there are none', ->
+      expected = 'Opened: #1122 (Foo request) http://foo.bar/pr/1122'
+    
+      # given
+      input =
+        pr_id: '1122'
+        pr_url: 'http://foo.bar/pr/1122'
+        pr_title: 'Foo request'
+        pr_reviewers: []
 
+      # then
+      expect(format.pr.opened input).to.eql expected
+
+      # given
+      input =
+        pr_id: '1122'
+        pr_url: 'http://foo.bar/pr/1122'
+        pr_title: 'Foo request'
+        pr_reviewers: undefined
+  
+      # then
+      expect(format.pr.opened input).to.eql expected
 
   # =========================================================================
   #  .room

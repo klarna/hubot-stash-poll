@@ -13,7 +13,14 @@
             "href": "http://a.com/projects/proj1/repos/repo1/pull-requests/101"
           }
         ]
-      }
+      },
+      "reviewers": [
+        {
+          "user": {
+            "name": "testuser"
+          }
+        }
+      ]
     },
     {
       "id": 102,
@@ -25,7 +32,14 @@
             "href": "http://a.com/projects/proj1/repos/repo1/pull-requests/102"
           }
         ]
-      }
+      },
+      "reviewers": [
+        {
+          "user": {
+            "name": "testuser"
+          }
+        }
+      ]
     },
     {
       "id": 103,
@@ -37,7 +51,14 @@
             "href": "http://a.com/projects/proj1/repos/repo1/pull-requests/103"
           }
         ]
-      }
+      },
+      "reviewers": [
+        {
+          "user": {
+            "name": "testuser"
+          }
+        }
+      ]
     },
     {
       "id": 104,
@@ -49,7 +70,14 @@
             "href": "http://a.com/projects/proj1/repos/repo1/pull-requests/104"
           }
         ]
-      }
+      },
+      "reviewers": [
+        {
+          "user": {
+            "name": "testuser"
+          }
+        }
+      ]
     },
     {
       "id": 105,
@@ -61,7 +89,14 @@
             "href": "http://a.com/projects/proj1/repos/repo1/pull-requests/105"
           }
         ]
-      }
+      },
+      "reviewers": [
+        {
+          "user": {
+            "name": "testuser"
+          }
+        }
+      ]
     },
     {
       "id": 106,
@@ -73,7 +108,14 @@
             "href": "http://a.com/projects/proj1/repos/repo1/pull-requests/106"
           }
         ]
-      }
+      },
+      "reviewers": [
+        {
+          "user": {
+            "name": "testuser"
+          }
+        }
+      ]
     }
   ],
   "start": 0,

@@ -92,6 +92,7 @@ module.exports =
       id: parseInt pull_request.url.split('/').reverse()[0], 10
       url: pull_request.url
       title: pull_request.title
+      reviewers: ['testuser']
       api_url: pull_request.url
         .replace('/projects/', '/rest/api/1.0/projects/')
         .replace(/\/\d+$/, '')
