@@ -18,7 +18,7 @@ describe 'utils | format', ->
         pr_title: 'Foo request'
         pr_reviewers: ['a', 'b']
 
-      expected = 'Opened: #1122 (Foo request) for a,b http://foo.bar/pr/1122'
+      expected = 'Opened: #1122 (Foo request) for a, b http://foo.bar/pr/1122'
 
       # then
       expect(format.pr.opened input).to.eql expected
@@ -33,7 +33,7 @@ describe 'utils | format', ->
         pings: ['@foo', '#bar']
         pr_reviewers: ['a', 'b']
 
-      expected = 'Opened: #1122 (Foo request) for a,b http://foo.bar/pr/1122 ' +
+      expected = 'Opened: #1122 (Foo request) for a, b http://foo.bar/pr/1122 ' +
         '(ping @foo #bar)'
 
       # then

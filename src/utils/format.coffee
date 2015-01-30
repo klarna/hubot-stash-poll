@@ -54,7 +54,7 @@ module.exports =
   pr:
     opened: (prData) ->
       if prData.pr_reviewers?.length > 0
-        reviewers = "for #{prData.pr_reviewers} "
+        reviewers = "for #{prData.pr_reviewers.join(', ')} "
       else
         reviewers = ""
 
