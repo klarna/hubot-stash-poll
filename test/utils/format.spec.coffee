@@ -18,7 +18,7 @@ describe 'utils | format', ->
         pr_title: 'Foo request'
         pr_reviewers: ['a', 'b']
 
-      expected = 'Opened: #1122 (Foo request) for a,b<br/>http://foo.bar/pr/1122'
+      expected = 'Opened: #1122 (Foo request) for a,b http://foo.bar/pr/1122'
 
       # then
       expect(format.pr.opened input).to.eql expected
@@ -33,7 +33,7 @@ describe 'utils | format', ->
         pings: ['@foo', '#bar']
         pr_reviewers: ['a', 'b']
 
-      expected = 'Opened: #1122 (Foo request) for a,b<br/>http://foo.bar/pr/1122 ' +
+      expected = 'Opened: #1122 (Foo request) for a,b http://foo.bar/pr/1122 ' +
         '(ping @foo #bar)'
 
       # then
@@ -48,7 +48,7 @@ describe 'utils | format', ->
         pr_url: 'http://baz/pr/78'
         pr_title: 'Add baz'
 
-      expected = 'Merged: #78 (Add baz)<br/>http://baz/pr/78'
+      expected = 'Merged: #78 (Add baz) http://baz/pr/78'
 
       # then
       expect(format.pr.merged input).to.eql expected
@@ -61,7 +61,7 @@ describe 'utils | format', ->
         pr_url: 'http://yo.yo/pr/33'
         pr_title: 'Fix tests'
 
-      expected = 'Declined: #33 (Fix tests)<br/>http://yo.yo/pr/33'
+      expected = 'Declined: #33 (Fix tests) http://yo.yo/pr/33'
 
       # then
       expect(format.pr.declined input).to.eql expected
