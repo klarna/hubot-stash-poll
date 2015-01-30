@@ -53,7 +53,12 @@ module.exports =
   # =========================================================================
   pr:
     opened: (prData) ->
-      str = "Opened: ##{prData.pr_id} (#{prData.pr_title}) for #{prData.pr_reviewers} #{prData.pr_url}"
+      if prData.pr_reviewers?.length > 0
+        reviewers = "for #{prData.pr_reviewers} "
+      else
+        reviewers = ""
+
+      str = "Opened: ##{prData.pr_id} (#{prData.pr_title}) #{reviewers}#{prData.pr_url}"
 
       if prData.pings?
         "#{str} (ping #{prData.pings.join ' '})"

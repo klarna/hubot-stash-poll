@@ -84,7 +84,28 @@ describe 'utils | format', ->
         pr_reviewers: ['a', 'b']
         api_url: 'api.foo'
 
+    it 'must leave out reviewer text if there are none', ->
+      expected = 'Opened: #1122 (Foo request) http://foo.bar/pr/1122'
+    
+      # given
+      input =
+        pr_id: '1122'
+        pr_url: 'http://foo.bar/pr/1122'
+        pr_title: 'Foo request'
+        pr_reviewers: []
 
+      # then
+      expect(format.pr.opened input).to.eql expected
+
+      # given
+      input =
+        pr_id: '1122'
+        pr_url: 'http://foo.bar/pr/1122'
+        pr_title: 'Foo request'
+        pr_reviewers: undefined
+  
+      # then
+      expect(format.pr.opened input).to.eql expected
 
   # =========================================================================
   #  .room
